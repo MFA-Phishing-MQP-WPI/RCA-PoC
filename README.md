@@ -7,3 +7,9 @@
 5. Create a Rogue Certificate Authority (`RCA`)
 6. Administer a `Rogue SSL Certificate` (`RSC`) for a `rogue website` or `rogue web service`
 7. Validate the `RSC`
+
+<br>
+
+<br>
+
+clean up with `rm -f Microsoft_SSL_Cert VM_SSL_Cert CA_gen ca_private_key.pem ca_public_key.pem`
