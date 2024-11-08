@@ -12,4 +12,6 @@
 
 <br>
 
-clean up with `python3 reset.py`
+Clean up with `python3 reset.py`
+
+Run with `main.py`
