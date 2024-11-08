@@ -13,12 +13,14 @@ class CA:
     _private_key_file = "ca_private_key.pem"
     _public_key_file = "ca_public_key.pem"
 
-    def __init__(self, name: str):
-        self.name = name
+    def __init__(self, name: str, organization: str, country: str = "US"):
+        self.name: str = name
+        self.organization: str = organization
+        self.country: str = country
         self._private_keyy = None
         self._public_key = None
-        self._private_key_file = f"{self.name}/private_key.pem"
-        self._public_key_file = f"{self.name}/public_key.pem"
+        self._private_key_file: str = f"{self.name}/private_key.pem"
+        self._public_key_file: str = f"{self.name}/public_key.pem"
         self._initialize_ca()
 
     def _initialize_ca(self):
@@ -32,6 +34,13 @@ class CA:
             self._public_key = self._private_key.public_key()
         else:
             self._generate_keys()
+
+    def to_issuer(self) -> dict:
+        return {
+            "common_name": self.name,
+            "organization": self.organization,
+            "country": self.country
+        }
 
     def _generate_keys(self):
         """Generates a new RSA key pair and saves them to files."""
@@ -111,5 +120,5 @@ class CA:
             return False
 
 
-GlobalSign: CA = CA('GlobalSignCA')
-IdenTrust: CA = CA('IdenTrustCA')
+GlobalSign: CA = CA('GlobalSignCA', "GlobalSign CA Ltd.")
+IdenTrust: CA = CA('IdenTrustCA', "IdenTrust CA Ltd.")
