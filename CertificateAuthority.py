@@ -17,8 +17,8 @@ class CA:
         self.name = name
         self._private_keyy = None
         self._public_key = None
-        self._private_key_file = f"{self.name}/ca_private_key.pem"
-        self._public_key_file = f"{self.name}/ca_public_key.pem"
+        self._private_key_file = f"{self.name}/private_key.pem"
+        self._public_key_file = f"{self.name}/public_key.pem"
         self._initialize_ca()
 
     def _initialize_ca(self):
@@ -86,79 +86,6 @@ class CA:
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         )
 
-    '''
-    @staticmethod
-    def _initialize_ca():
-        """Initializes CA by loading or generating the RSA key pair."""
-        if os.path.exists(CA._private_key_file):
-            # Load the private key from file
-            with open(CA._private_key_file, "rb") as key_file:
-                CA._private_key = serialization.load_pem_private_key(
-                    key_file.read(),
-                    password=None,
-                    backend=default_backend()
-                )
-            # Load the corresponding public key
-            CA._public_key = CA._private_key.public_key()
-        else:
-            # Generate new keys and save them to files
-            CA._generate_keys()
-
-    @staticmethod
-    def _generate_keys():
-        """Generates a new RSA key pair and saves them to files."""
-        CA._private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-            backend=default_backend()
-        )
-        CA._public_key = CA._private_key.public_key()
-
-        # Write the private key to a file
-        with open(CA._private_key_file, "wb") as key_file:
-            key_file.write(
-                CA._private_key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption()
-                )
-            )
-
-        # Write the public key to a file
-        with open(CA._public_key_file, "wb") as key_file:
-            key_file.write(
-                CA._public_key.public_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PublicFormat.SubjectPublicKeyInfo
-                )
-            )
-
-    @staticmethod
-    def sign(data: bytes) -> bytes:
-        """Signs data using the private key and returns the base64-encoded signature."""
-        if CA._private_key is None:
-            CA._initialize_ca()
-        signature = CA._private_key.sign(
-            data,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256()
-        )
-        return signature
-
-    @staticmethod
-    def get_pub() -> bytes:
-        """Returns the public key in PEM format."""
-        if CA._public_key is None:
-            CA._initialize_ca()
-        return CA._public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        )
-    '''
-
     @staticmethod
     def authenticate(signed_data: bytes, public_key: bytes, expected_data: bytes = None) -> bool:
         """Authenticates by verifying that signed_data matches expected_data using the public key."""
@@ -184,5 +111,5 @@ class CA:
             return False
 
 
-GlobalSign: CA = CA('GlobalSign')
-# IdenTrust: CA = CA('IdenTrust')
+GlobalSign: CA = CA('GlobalSignCA')
+IdenTrust: CA = CA('IdenTrustCA')
