@@ -2,6 +2,7 @@ import os
 import shutil
 import psutil
 import sys
+from typing import Tuple
 
 # List of files and directories to remove
 FILES_TO_REMOVE = [
@@ -43,20 +44,40 @@ def cleanup_ports(ports):
 
 
 
-def clean_and_delete(arg: str):
+def clean_and_delete(arg: str, debug:bool=False):
     if arg in ['p', 'ports', 'a', 'all']:
+        if debug: print(" - ports - ")
         ports_to_cleanup = [5555, 6666, 6665]
         cleanup_ports(ports_to_cleanup)
     if arg in ['f', 'files', 'a', 'all']:
+        if debug: print(" - files - ")
         delete_files(FILES_TO_REMOVE)
         delete_dirs(DIRS_TO_REMOVE)
 
 def miss_used():
-    print("ERROR INCORRECT USAGE")
-    print("USAGE: python3 reset.py [(P)orts (F)iles (A)ll]")
-    exit(1)
+    print("\nERROR INCORRECT USAGE")
+    print("\n\tUSAGE:   python3   reset.py   [ (P)orts  (F)iles  (A)ll ]   [ OPTIONAL:  -(D)bug ]\n")
+    exit()
+
+def arg_wrong() -> Tuple[bool, str, bool]:
+    if len(sys.argv) not in [2, 3]:
+        return (False, "", False)
+    index = -1
+    if len(sys.argv) == 3:
+        arg1, arg2 = sys.argv[1].lower(), sys.argv[2].lower()
+        if arg1 not in ['-d', '-debug'] and arg2 not in ['-d', '-debug']:
+            return (False, "", False)
+        index = 2 if arg1 in ['-d', '-debug'] else 1
+        if sys.argv[index].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
+            return (False, "", False)
+        return (True, sys.argv[index].lower(), True)
+    elif sys.argv[1].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
+        return (False, "", False)
+    return (True, sys.argv[1].lower(), False)
+    
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
+    correct_usage, action, debug = arg_wrong()
+    if not correct_usage:
         miss_used()
-    clean_and_delete(sys.argv[1].lower())
+    clean_and_delete(action, debug=debug)
