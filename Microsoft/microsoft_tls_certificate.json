@@ -1,0 +1,18 @@
+{
+    "subject": {
+        "common_name": "login.microsoft.com",
+        "organization": "Microsoft Corporation",
+        "country": "US"
+    },
+    "issuer": {
+        "common_name": "GlobalSignCA",
+        "organization": "GlobalSign CA Ltd.",
+        "country": "US"
+    },
+    "serial_number": "987654321ABCDEF",
+    "signature": "22d785d19dbe4e775764cc02a527fd7aa1392eaf8b003e35283f41db9047d19c991031fd4f8a9a73d9f9218ee5078150f900795b2ce35eb8a154e396deb5357f62ffca757e6bf6aa8e224cfe250865423f049ac0c5dc452f1b33f318c23ac6b03c616b55e124c88ec052f33aed4767361e0bb30d2b6f82b68f54448b650924f6344cf72d779760b50fa124651a583717ceffe5a60737fb5ca9577400b6bc7242039b8e815eafeb6b6846c78d8f21b10f0e8b63d90e208aff56974234677e7ec012f9d63a468457b8e894d9979b2b2fa3927c75abd0932f5d0e6f60d0752e1bad8dcf1898d315ba223e1eb8bed9a96004ac8bd8deb8e6e51fa14008f36a457cc1",
+    "validity_period": {
+        "not_before": "2024-01-01 00:00:00",
+        "not_after": "2025-01-01 00:00:00"
+    }
+}
