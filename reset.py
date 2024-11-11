@@ -47,7 +47,7 @@ def cleanup_ports(ports):
 def clean_and_delete(arg: str, debug:bool=False):
     if arg in ['p', 'ports', 'a', 'all']:
         if debug: print(" - ports - ")
-        ports_to_cleanup = [5555, 6666, 6665]
+        ports_to_cleanup = [5555, 6666, 6665, 7777]
         cleanup_ports(ports_to_cleanup)
     if arg in ['f', 'files', 'a', 'all']:
         if debug: print(" - files - ")
