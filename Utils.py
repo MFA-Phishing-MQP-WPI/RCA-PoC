@@ -18,6 +18,10 @@ class TLS_Certificate:
 
     def get_url(self) -> str:
         return self.subject["common_name"]
+    def get_signature(self) -> bytes:
+        return bytes.fromhex(self.signature)
+    def get_expected_data(self) -> bytes:
+        return self.to_signable()
 
     def to_json(self):
         # Convert the certificate to a JSON string

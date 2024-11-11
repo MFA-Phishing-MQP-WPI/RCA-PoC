@@ -74,10 +74,11 @@ def test_SSL_Cert():
 
     # Verification step (example)
     is_valid: bool = CA.authenticate(
-        signed_data=microsoft_cert.signature,
+        signed_data=microsoft_cert.get_signature(),
         public_key=GlobalSign.get_pub(),
-        expected_data=microsoft_cert.to_signable()
+        expected_data=microsoft_cert.get_expected_data()
     )
-    print(f"Certificate authenticity verified: {is_valid}")
+    print(f"Certificate authenticity verified: {is_valid}\n")
+
 
 test_SSL_Cert()

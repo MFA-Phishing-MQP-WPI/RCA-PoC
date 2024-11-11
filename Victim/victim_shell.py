@@ -1,10 +1,12 @@
 import socket
 import json
-from CertificateAuthority import GlobalSign
-from Utils import TLS_Certificate
+from VUtils import TLS_Certificate, cert_is_authentic
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 import os
+from typing import List
+
+
 
 def send(msg: str, conn: socket.socket, shared_key: bytes) -> bool:
     try:
@@ -17,6 +19,8 @@ def send(msg: str, conn: socket.socket, shared_key: bytes) -> bool:
         print(f"Error sending message: {e}")
         return False
 
+
+
 def receive(conn: socket.socket, shared_key: bytes) -> str:
     try:
         data = conn.recv(1024)
@@ -27,7 +31,12 @@ def receive(conn: socket.socket, shared_key: bytes) -> str:
         print(f"Error receiving message: {e}")
         return ""
 
-# Step 1: Ask DNS for the "Microsoft" server's port
+
+
+################################################################
+
+
+
 def query_dns(dns_host, dns_port, to:str="login.microsoft.com"):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -39,7 +48,8 @@ def query_dns(dns_host, dns_port, to:str="login.microsoft.com"):
         print("\n\tCould not connect to DNS. Is it running?\n")
         exit()
 
-# Step 2: Connect to "Microsoft" server and perform key exchange
+
+
 def connect_to_web_service(host, port, target:str='login.microsoft.com'):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
@@ -48,42 +58,30 @@ def connect_to_web_service(host, port, target:str='login.microsoft.com'):
             print(f"\n\tCould not connect to web_service({target} at {port}). Is it running?\n")
             exit()
         
-        # Step 3: Receive SSL certificate (simulated)
         cert_data = s.recv(4096).decode()  # Receive the JSON data of the certificate
         cert_dict = json.loads(cert_data)
         
-        # Re-create TLS_Certificate instance from received data
         received_certificate = TLS_Certificate(
             subject=cert_dict["subject"],
             issuer=cert_dict["issuer"],
             serial_number=cert_dict["serial_number"],
-            signature=bytes.fromhex(cert_dict["signature"]),  # Convert hex string to bytes
+            signature=cert_dict["signature"],
             not_before=cert_dict["validity_period"]["not_before"],
             not_after=cert_dict["validity_period"]["not_after"]
         )
 
-        # Step 4: Verify certificate authenticity
-        is_valid = GlobalSign.authenticate(
-            signed_data=received_certificate.signature,
-            public_key=GlobalSign.get_pub(),
-            expected_data=received_certificate.to_signable()
-        )
-
-        if not is_valid:
-            print("SSL Certificate authenticity could not be verified. Aborting.")
-            return
-        else:
+        if cert_is_authentic( received_certificate.get_signature(), received_certificate.get_expected_data() ):
             print("SSL Certificate successfully verified.")
+        else:
+            print("SSL Certificate authenticity could not be verified. (HTTPS FAILED) Aborting.")
+            return
 
-        # Step 5: Diffie-Hellman key exchange
         my_secret = os.urandom(16)
         s.sendall(my_secret)
         their_secret = s.recv(1024)
 
-        # Create shared key
         shared_key = bytes(a ^ b for a, b in zip(my_secret, their_secret))
 
-        # Step 6: Send and receive messages
         if send("This is the victim, announce yourself!", s, shared_key):
             print("Message sent to Microsoft.")
         
@@ -93,7 +91,8 @@ def connect_to_web_service(host, port, target:str='login.microsoft.com'):
         else:
             print(f"Microsoft says: '{response}'")
 
-# Main execution
+
+
 if __name__ == "__main__":
     try:
         target = 'login.microsoft.com'
@@ -103,4 +102,4 @@ if __name__ == "__main__":
             exit()
         connect_to_web_service("localhost", dns_port, target=target)
     except KeyboardInterrupt:
-        pass
+        print("",end='\r')
