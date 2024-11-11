@@ -50,7 +50,7 @@ def test_SSL_Cert():
     not_after = datetime(2025, 1, 1)
 
     # Create the TLS Certificate instance
-    microsoft_cert = TLS_Certificate(
+    microsoft_cert: TLS_Certificate = TLS_Certificate(
         subject=subject,
         issuer=issuer,
         serial_number=serial_number,
@@ -73,10 +73,10 @@ def test_SSL_Cert():
     microsoft_cert.save_to_file("microsoft_tls_certificate.json")
 
     # Verification step (example)
-    is_valid = CA.authenticate(
-        signed_data=signature,
+    is_valid: bool = CA.authenticate(
+        signed_data=microsoft_cert.signature,
         public_key=GlobalSign.get_pub(),
-        expected_data=cert_data
+        expected_data=microsoft_cert.to_signable()
     )
     print(f"Certificate authenticity verified: {is_valid}")
 
