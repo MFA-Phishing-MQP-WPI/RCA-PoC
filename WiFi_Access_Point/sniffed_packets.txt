@@ -78,3 +78,20 @@
 
 
 
+11/12/2024 12:50:19 PM 50244 -> 5555:  get-request   login.microsoft.com
+11/12/2024 12:50:19 PM 5555 -> 50244:  get-response  200 6666
+11/12/2024 12:50:19 PM 50246 -> 6665:  get-request   CERT_REQUEST
+11/12/2024 12:50:19 PM 6665 -> 50246:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/12/2024 12:50:20 PM 50246 -> 6665:  public-key    b'\x18\x92KS\x7f;+W\x7f\x96\xf7\x8e\x15<{B'
+11/12/2024 12:50:25 PM 6665 -> 50246:  garbage       
+11/12/2024 12:50:37 PM 50250 -> 5555:  get-request   login.microsoft.com
+11/12/2024 12:50:37 PM 5555 -> 50250:  get-response  200 6666
+11/12/2024 12:50:37 PM 50252 -> 6665:  get-request   CERT_REQUEST
+11/12/2024 12:50:37 PM 6665 -> 50252:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/12/2024 12:50:38 PM 50252 -> 6665:  public-key    b'\xf8?\xbf\xbd\x8c\xa4^i@-\x90\xedW>/n'
+11/12/2024 12:50:38 PM 6665 -> 50252:  get-response  b'200 N\xe9A\xba\xf9\x17\xd7#\x0b&V\x94\xce\xe3b\xfd'
+11/12/2024 12:50:38 PM 50252 -> 6665:  https-secure  fRI5vmpHyVHJ7mLlOyRQNJQQNzEJX43wEH95qpSLg8c+d7Ce36eYwZCMK5AFwJm9zk05kgu4
+11/12/2024 12:50:38 PM 6665 -> 50252:  get-response  b'200 !\\\xe0\xae\xfa\x909\xe0\x86^Kv\\\x82\xccfBH{\xb8eA\xa8\xb8y\t3\x14Oa\x08\xf5\x03'
+
+
+

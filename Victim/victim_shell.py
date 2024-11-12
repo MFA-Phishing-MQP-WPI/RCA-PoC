@@ -1,6 +1,6 @@
 import socket
 import json
-from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose, known_CA_names, refresh_CAs, display_CAs, FR
+from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose, known_CA_names, refresh_CAs, display_CAs, download_progress, installing, FR
 import os
 
 # Access Point Shell host and port
@@ -146,11 +146,13 @@ def download_ca(APh, APp):
         try:
             s.sendall(b'download certificate')
             response = s.recv(2048)
+            download_progress(4, 'Downloading Certificate ')
         except Exception as e:
             print(f' > err {e}')
             return
     FR.write('RootCertificates/MaliciousCA_public_key.pem', response, mode='wb')
     print(' > Download Successful')
+    installing(2.6)
     refresh_CAs()
     if is_verbose(): display_CAs()
     print(' > CAs Updated\n')
