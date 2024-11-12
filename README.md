@@ -18,7 +18,7 @@ To run this PoC, you’ll need four terminals (or terminal windows) set up in fo
 
 1. **Clone the repository**:
     ```bash
-    git clone [https://github.com/MFA-Phishing-MQP-WPI/RCA-PoC.git](https://github.com/MFA-Phishing-MQP-WPI/RCA-PoC.git)
+    git clone https://github.com/MFA-Phishing-MQP-WPI/RCA-PoC.git
     ```
 
 2. **Running each component**:
