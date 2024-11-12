@@ -9,7 +9,53 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 import socket
 import base64
+import time
+import random
 import sys
+
+def download_progress(
+        load_time: float,
+        prefix: str,
+        bar_length:int = 40,
+        total_steps:int = 100
+    ):
+    
+    start_time = time.time()
+    elapsed_time = 0
+
+    while elapsed_time < load_time:
+        elapsed_percentage = min(100, int((elapsed_time / load_time) * 100))
+        progress = min(total_steps, elapsed_percentage + random.randint(1, 5))
+        if progress > 100:
+            progress = 100
+        
+        bar = "#" * (progress * bar_length // 100)
+        sys.stdout.write(f"\r{prefix}[{bar:<{bar_length}}] {progress}%")
+        sys.stdout.flush()
+        time.sleep(random.uniform(0.05, 0.1))
+        
+        elapsed_time = time.time() - start_time
+    sys.stdout.write("\r{}[{}] 100%\n".format(prefix, "#" * bar_length))
+    sys.stdout.flush()
+
+def installing(load_time: float):
+    cursor = '|/-\\'
+    start_time = time.time()
+    elapsed_time = 0
+
+    while elapsed_time < load_time:
+        for c in cursor:
+            sys.stdout.write(f"\rInstalling CA {c}")
+            sys.stdout.flush()
+            time.sleep(0.1)
+            
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= load_time:
+                break
+
+    sys.stdout.write("\rInstalling complete      \n")
+    sys.stdout.flush()
+
 
 
 

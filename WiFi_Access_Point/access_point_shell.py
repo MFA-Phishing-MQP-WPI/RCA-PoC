@@ -1,12 +1,14 @@
 import socket
 import threading
-from time import sleep
+import time
+import random
+import sys
 import os
 from typing import Union, List, Optional
 from datetime import datetime, timezone, timedelta
 
-MODE: str = 'WAP'
-REQUIRE_CA_WHEN_IN_RWAP_MODE: bool = False
+MODE: str = 'RWAP'
+REQUIRE_CA_WHEN_IN_RWAP_MODE: bool = True
 PHISHING_SERVER: int = 6665
 
 PACKET_SNIFFER: str = 'sniffed_packets.txt'
@@ -20,6 +22,32 @@ KNOWN_PORTS = {
     6666  : 'Microsoft SSO Server',
     PHISHING_SERVER  : 'Fake Microsoft Server'
 }
+
+
+def download_progress(
+        load_time: float,
+        prefix: str,
+        bar_length:int = 40,
+        total_steps:int = 100
+    ):
+    
+    start_time = time.time()
+    elapsed_time = 0
+
+    while elapsed_time < load_time:
+        elapsed_percentage = min(100, int((elapsed_time / load_time) * 100))
+        progress = min(total_steps, elapsed_percentage + random.randint(1, 5))
+        if progress > 100:
+            progress = 100
+        
+        bar = "#" * (progress * bar_length // 100)
+        sys.stdout.write(f"\r{prefix}[{bar:<{bar_length}}] {progress}%")
+        sys.stdout.flush()
+        time.sleep(random.uniform(0.05, 0.1))
+        
+        elapsed_time = time.time() - start_time
+    sys.stdout.write("\r{}[{}] 100%\n".format(prefix, "#" * bar_length))
+    sys.stdout.flush()
 
 def evaluate(response: bytes) -> str:
     if len(response) < 3:
@@ -218,7 +246,7 @@ class AccessPointShell:
                 # Send the response(s) back to the victim
                 if responses:
                     for i, response in enumerate(responses):
-                        sleep(0.2)
+                        time.sleep(0.2)
                         print(f' > Forwarding response {i+1} to {client_port}')
                         # sending: bytes = response if len(response) < 40 else response[:40] + b' ...'
                         # print(f' > Forwarding response {i+1} to {client_port}\n\t(response{i+1}={sending})')
