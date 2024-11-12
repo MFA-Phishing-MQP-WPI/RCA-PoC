@@ -43,12 +43,18 @@ To run this PoC, you’ll need four terminals (or terminal windows) set up in fo
    ```
    
    **Terminal 4** - `Victim`:
+   ###### basic:
    ```bash
    cd RCA-PoC/Victim
-   python3 victim_shell.py
+   python3 victim_shell.py 
+   ```
+   ###### verbose:
+   ```bash
+   cd RCA-PoC/Victim
+   python3 victim_shell.py -v
    ```
 
-3. **Expected Flow**:
+4. **Expected Flow**:
    - The `victim` first connects to the `DNS server` through the `access point`, requesting to resolve `login.microsoft.com`.
    - The `DNS server` responds with the `port` for the `Microsoft server`.
    - The `victim` then requests a `TLS certificate` from the `Microsoft server`, which the `access point` forwards.

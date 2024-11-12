@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 import socket
 import base64
+import sys
 
 
 
@@ -238,6 +239,13 @@ def to_b64(raw: bytes) -> bytes:
 def from_b64(b64_bytes: bytes) -> bytes:
     return base64.b64decode(b64_bytes.decode())
 
+def edit_verbose():
+    if len(sys.argv) != 1 and (len(sys.argv) != 2 or sys.argv[1].lower() not in ["-v", "-verbose"]):
+        print('USAGE:  python3 victim_shell.py')
+        print('USAGE:  python3 victim_shell.py [-v -verbose]')
+    if len(sys.argv) == 2:
+        global verbose
+        verbose = True
 
 if __name__ == '__main__':
     print("\nALL KNOWN CAs TO VICTIM\n")
