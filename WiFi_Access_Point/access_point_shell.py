@@ -5,6 +5,7 @@ import os
 from typing import Union, List, Optional
 from datetime import datetime, timezone, timedelta
 
+MODE: str = 'WAP'
 REQUIRE_CA_WHEN_IN_RWAP_MODE: bool = False
 PHISHING_SERVER: int = 6665
 
@@ -119,15 +120,28 @@ def handle_first_time_connect(req: bytes, mode: str, conn: socket):
     except UnicodeDecodeError:
         return False
     if question == 'connection request':
+        print(' > User requests to connect to Wi-Fi AP')
         if mode == 'WAP' or not REQUIRE_CA_WHEN_IN_RWAP_MODE:
+            print('   > Checking User\'s Root CAs')
+            print('   > User passed all checks ...')
+            print(' > allowing connection')
             conn.sendall(b'200 approved')
         else:
+            print('   > Checking User\'s Root CAs')
+            print('   > User failed (missing Malicious CA)')
+            print(' > Denied User access with message "403 certificate missing"')
             conn.sendall(b'403 certificate missing')
         return True
     if question == 'download certificate' and mode == 'RWAP':
+        print(' > User requests to download Malicious CA')
         conn.sendall(malcious_CA())
+        print(' > Malicious CA sent to user')
         return True
     if question == 'infected connection request' and mode == 'RWAP':
+        print(' > User requests to connect to Wi-Fi AP')
+        print('   > Checking User\'s Root CAs')
+        print('   > User passed all checks ... ')
+        print(' > allowing connection')
         conn.sendall(b'200 approved')
         return True
 
@@ -301,7 +315,7 @@ if __name__ == "__main__":
     try:
         ap_shell = AccessPointShell("localhost", 7777)
         # ap_shell.set_mode("WAP")  # WAP vs RWAP
-        ap_shell.set_mode("RWAP")   # WAP vs RWAP
+        ap_shell.set_mode(MODE)   # WAP vs RWAP
         ap_shell.start()
     except KeyboardInterrupt:
         print("\nAccess Point shutting down.")

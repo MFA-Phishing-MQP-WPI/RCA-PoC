@@ -45,3 +45,36 @@
 11/12/2024 11:14:02 AM 5555 -> 37208:  get-response  200 6666
 11/12/2024 11:14:02 AM 37220 -> 6665:  get-request   CERT_REQUEST
 11/12/2024 11:14:02 AM 6665 -> 37220:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+
+
+
+11/12/2024 11:17:50 AM 48070 -> 5555:  get-request   login.microsoft.com
+11/12/2024 11:17:50 AM 5555 -> 48070:  get-response  200 6666
+11/12/2024 11:17:50 AM 48072 -> 6665:  get-request   CERT_REQUEST
+11/12/2024 11:17:50 AM 6665 -> 48072:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/12/2024 11:17:51 AM 48072 -> 6665:  public-key    b'Q\x04c{\xeap\xf4\x12^\t=\xebr/[\x91'
+11/12/2024 11:17:51 AM 6665 -> 48072:  get-response  b'200 L\xc4\xf6\xa3\x06\xc7\x84R\xc2\xb1_\xecH\xd7\xb18'
+11/12/2024 11:17:51 AM 48072 -> 6665:  https-secure  5YMv+PkwqfY8zWor5mBh3ksRxQUgsTfrxB8IPP8QucPG2nHQKZqhcJ/p8P65un5O80VPWTTX
+11/12/2024 11:17:51 AM 6665 -> 48072:  get-response  b'200 f\xe2\x12\xb2\x1aG\x9aK\xd7\xcd\x18\x9a:*jjhvx\xe91x76\xd1\xd6\x9e\x84\x00x<7t\x1f\x16\xe8\x15}'
+11/12/2024 11:18:21 AM 59002 -> 5555:  get-request   login.microsoft.com
+11/12/2024 11:18:21 AM 5555 -> 59002:  get-response  200 6666
+11/12/2024 11:18:21 AM 59014 -> 6665:  get-request   CERT_REQUEST
+11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/12/2024 11:18:21 AM 59014 -> 6665:  public-key    b"\x04\xf1\x82'\x06\xa8\x04\x85\xb8\xf0?z\xd9I\xe5\xa6"
+11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  b'200 u\x89\x9a\xbd]Q\x07\x02\x1e0O\xb9ta\x19\xf0'
+11/12/2024 11:18:21 AM 59014 -> 6665:  https-secure  uvYN45WkGLwofmPmrmkIiJlpdGZS8byePu4x49nvOKruKRHxc2AFOmozTinQApQZN/aVqGjo
+11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  b'200 <e<=\x01\x1f\xfa!\x14G]\x1f\x01O"\xe3\xd7#\xcaaxA\xa9mp\xb4z\xd4\xee\xc3\x8d\xc5*dP,\xd2\xc0'
+
+
+
+11/12/2024 11:25:15 AM 35928 -> 5555:  get-request   login.microsoft.com
+11/12/2024 11:25:15 AM 5555 -> 35928:  get-response  200 6666
+11/12/2024 11:25:16 AM 35936 -> 6665:  get-request   CERT_REQUEST
+11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/12/2024 11:25:16 AM 35936 -> 6665:  public-key    b'\x1f\n\xde4\xa9\x87\x13~BZ\xed\x00\xdew\x87%'
+11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  b'200 \x84e;\xd2c\x9f\xe7\xcb\xc3y\xe1\xc2\xa4b%o'
+11/12/2024 11:25:16 AM 35936 -> 6665:  https-secure  uxu6owwobY9qRH4WMrjJPQIAeREgEch79QBQgdme1ZyKQenOmcUkvSFIusKNxJsDsGWDv/3e
+11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  b'200 X\xc0\xe0\xc4\xf0\xc5yXq\xd4\x08\xacAi\xd0\x14Cs\x92\xe2\xcd\xbeEA\xbd}\xc7\x9ceOey='
+
+
+

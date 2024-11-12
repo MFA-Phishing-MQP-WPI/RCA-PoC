@@ -174,7 +174,7 @@ def connect_to_wifi_access_point(APh, APp):
         print(" > connected to WiFi successfully")
         return
     if response == '403 certificate missing':
-        print(" > Can't connect to WiFi, reason: missing CA")
+        print(" > Can't connect to WiFi, reason: 'certificate missing'")
         if input('   Download CA from WiFi? (Y/n) > ').lower() not in ['yes', 'y']:
             exit()
         download_ca(APh, APp)
