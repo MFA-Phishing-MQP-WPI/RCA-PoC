@@ -30,7 +30,7 @@ def query_dns(dns_host, dns_port, to: str = "login.microsoft.com"):
             if status_code == "200":
                 try:
                     port = int(message)
-                    if is_verbose(): print(f"   < DNS resolved {to} to {port}")
+                    print(f"   < DNS resolved {to} to {port}")
                     return port
                 except ValueError:
                     if is_verbose(): print(f"   < Received non-integer port from DNS: '{message}'")

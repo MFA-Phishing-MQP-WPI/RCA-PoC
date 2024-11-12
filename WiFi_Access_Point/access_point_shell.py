@@ -5,15 +5,19 @@ import os
 from typing import Union, List, Optional
 from datetime import datetime, timezone, timedelta
 
+REQUIRE_CA_WHEN_IN_RWAP_MODE: bool = False
+PHISHING_SERVER: int = 6665
 
-PACKET_SNIFFER = 'sniffed_packets.txt'
+PACKET_SNIFFER: str = 'sniffed_packets.txt'
 KNOWN_PORTS = {
     '7777': 'Wi-Fi Access Point',
     '5555': 'DNS Server',
     '6666': 'Microsoft SSO Server',
+    f'{PHISHING_SERVER}': 'Fake Microsoft Server',
     7777  : 'Wi-Fi Access Point',
     5555  : 'DNS Server',
-    6666  : 'Microsoft SSO Server'
+    6666  : 'Microsoft SSO Server',
+    PHISHING_SERVER  : 'Fake Microsoft Server'
 }
 
 def evaluate(response: bytes) -> str:
@@ -115,7 +119,7 @@ def handle_first_time_connect(req: bytes, mode: str, conn: socket):
     except UnicodeDecodeError:
         return False
     if question == 'connection request':
-        if mode == 'WAP':
+        if mode == 'WAP' or not REQUIRE_CA_WHEN_IN_RWAP_MODE:
             conn.sendall(b'200 approved')
         else:
             conn.sendall(b'403 certificate missing')
@@ -145,6 +149,25 @@ class AccessPointShell:
         else:
             print("Invalid mode. Use 'WAP' for normal or 'RWAP' for rogue mode.")
 
+    def edit_DNS_response(self, responses: list, r_from) -> list:
+        if identify_port(r_from) != ' (DNS Server)':
+            return responses
+        print('        > ROGUE: Identified response from DNS')
+        result = []
+        for b_response in responses:
+            response = b_response.decode()
+            print(f'        > ROGUE:   {response=}')
+            status_code = response[:3]
+            resolved_port = response[4:]
+            if identify_port(resolved_port) == ' (Microsoft SSO Server)':
+                new_response = f'{status_code} {PHISHING_SERVER}'
+                print(f'        > ROGUE:     Replaced previous response with new response "{new_response}"')
+                result.append(new_response.encode())
+            else:
+                result.append(b_response)
+        print(f'        > ROGUE: Forwarding edited responses to client ...')
+        return result
+
     def handle_client(self, conn: socket, addr):
         client_port = get_port(addr)
         print(f"\nClient connected from {client_port}")
@@ -172,8 +195,11 @@ class AccessPointShell:
                     conn.sendall(b'400 Malformed Request')
                     break
 
-                # Forward the request to the specified target port
+                
                 responses = self.forward_request(b_message, "localhost", target_port, expected_responses, client_port)
+
+                if self.mode == 'RWAP':
+                    responses = self.edit_DNS_response(responses, target_port)
 
                 # Send the response(s) back to the victim
                 if responses:
@@ -251,7 +277,7 @@ class AccessPointShell:
                         responses.append(response)
                     else:
                         message_to_display: bytes = b_message if len(b_message) < 80 else b_message[:80] + b' ...'
-                        print(f'   > Decoded reply from {target_port} as [code: {response_code}, message: "{message_to_display}"]')
+                        print(f'   > Decoded reply from {target_port}{identify_port(target_port)} as [code: {response_code}, message: {message_to_display}]')
                         responses.append(b'200 ' + b_message)
 
             return responses
