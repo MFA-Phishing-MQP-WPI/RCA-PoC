@@ -5,6 +5,7 @@ from cryptography.hazmat.backends import default_backend
 from MUtils import get_port, encrypt, decrypt, to_b64, from_b64, decoder
 
 DATAFILE = 'Data.txt'
+TIME_OUT_TIME = 5.0
 
 def get_TLS_bytes() -> bytes:
     """Reads and returns the TLS certificate as bytes."""
@@ -22,6 +23,7 @@ def run_microsoft_server(microsoft_host, microsoft_port):
             print(f"\nConnected by victim at {client_port}")
             with conn:
                 try:
+                    conn.settimeout(TIME_OUT_TIME)
                     # Step 1: Wait for the TLS certificate request
                     b_request = conn.recv(1024)
                     id, request = decoder(b_request)
@@ -37,7 +39,13 @@ def run_microsoft_server(microsoft_host, microsoft_port):
                         client_secret = request
                         if not client_secret:
                             print(f" > Failed to receive {client_port}'s public key")
-                            continue
+                            try:
+                                print(f' > Waiting 5 more seconds...')
+                                client_secret = conn.recv(1024)
+                            except socket.timeout as e:
+                                print(f'   < socket {e}')
+                            if not client_secret:
+                                continue
 
                         my_secret = os.urandom(16)
                         conn.sendall(b'200 ' + my_secret)
@@ -55,7 +63,13 @@ def run_microsoft_server(microsoft_host, microsoft_port):
                         response = decrypt(encrypted_response, shared_key)
                         if not response:
                             print(f" > Empty message from {client_port}! Aborting connection.")
-                            continue
+                            try:
+                                print(f' > Waiting 5 more seconds...')
+                                response = conn.recv(1024)
+                            except socket.timeout as e:
+                                print(f'   < socket {e}')
+                            if not response:
+                                continue
                         print(f"Received message from {client_port}: '{response}'")
 
                         # Step 4: Respond with encrypted identity

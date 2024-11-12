@@ -1,13 +1,41 @@
 import socket
 import threading
 from time import sleep
+import os
+from datetime import datetime, timezone, timedelta
 
 
+PACKET_SNIFFER = 'sniffed_packets.txt'
 KNOWN_PORTS = {
     '7777': 'Wi-Fi Access Point',
     '5555': 'DNS Server',
-    '6666': 'Microsoft SSO Server'
+    '6666': 'Microsoft SSO Server',
+    7777  : 'Wi-Fi Access Point',
+    5555  : 'DNS Server',
+    6666  : 'Microsoft SSO Server'
 }
+
+def get_timestamp():
+    now = datetime.now(timezone.utc)  # Get current time in UTC
+    est_timezone = timezone(offset=-timedelta(hours=5))  # Define EST timezone
+    est_time = now.astimezone(est_timezone)  # Convert to EST
+    return est_time.strftime("%m/%d/%Y %I:%M:%S %p")
+
+def add_to_file(_from: str, _to: str, packet: bytes):
+    if not os.path.exists(PACKET_SNIFFER):
+        open(PACKET_SNIFFER,'w').write('')
+    try:
+        packet = packet.decode().replace('\n', '\\n')
+    except UnicodeDecodeError:
+        pass
+    with open(PACKET_SNIFFER, 'a') as f:
+        f.write(f'{get_timestamp()}'.ljust(18) + f' {_from} -> {_to}:'.ljust(15) + f' "{packet}"\n')
+
+def add_to_file_update():
+    if not os.path.exists(PACKET_SNIFFER):
+        open(PACKET_SNIFFER,'w').write('')
+    else:
+        open(PACKET_SNIFFER, 'a').write('\n\n\n')
 
 def identify_port(port_str: str) -> str:
     if port_str not in KNOWN_PORTS.keys():
@@ -54,7 +82,7 @@ class AccessPointShell:
                     port_str = victim_request[:4].decode()
                     b_message = victim_request[5:-2]
                     expected_responses_str = victim_request[-2:].decode().strip()
-                    print(f'\n > New request from {client_port}: Send "{b_message}" to "{port_str}"{identify_port(port_str)} (Expecting {expected_responses_str} responses)')
+                    # print(f'\n > New request from {client_port}: Send "{b_message}" to "{port_str}"{identify_port(port_str)} (Expecting {expected_responses_str} responses)')
                     target_port = int(port_str)
                     expected_responses = int(expected_responses_str)
                 except ValueError:
@@ -63,20 +91,19 @@ class AccessPointShell:
                     break
 
                 # Forward the request to the specified target port
-                responses = self.forward_request(b_message, "localhost", target_port, expected_responses)
+                responses = self.forward_request(b_message, "localhost", target_port, expected_responses, client_port)
 
                 # Send the response(s) back to the victim
                 if responses:
                     for i, response in enumerate(responses):
                         sleep(0.2)
-                        sending: bytes = response if len(response) < 40 else response[:40] + b' ...'
-                        print(f' > Forwarding response {i+1} to {client_port}\n\t(response{i+1}={sending})')
+                        print(f' > Forwarding response {i+1} to {client_port}')
+                        # sending: bytes = response if len(response) < 40 else response[:40] + b' ...'
+                        # print(f' > Forwarding response {i+1} to {client_port}\n\t(response{i+1}={sending})')
                         conn.sendall(response)
                 else:
                     print(f' > Forwarding "404 Target Unreachable" to {client_port}')
                     conn.sendall(b'404 Target Unreachable')
-                
-                print(' > replied to client ... waiting for client to close connection')
 
         except Exception as e:
             print(f"Error handling client {client_port} connection: {e}")
@@ -84,32 +111,43 @@ class AccessPointShell:
             conn.close()
             print(f"Connection with client {client_port} closed.\n__________________________________________\n")
 
-    def forward_request(self, request, target_host, target_port, expected_responses) -> list:
+    def forward_request(self, request, target_host, target_port, expected_responses, client_port) -> list:
         """Forward the request to the target and get the response(s)."""
         responses = []
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((target_host, target_port))
-                print(f'   > Connected to {target_port}{identify_port(str(target_port))}')
+                message_type = 'un-encrypted_get_request='
+                queue = ''
+                # print(f'   > Connected to {target_port}{identify_port(str(target_port))}')
                 if b'<flag: key_exchange>' == request[:20]:
+                    message_type = 'un-encrypted_key_exchange='
                     s.sendall(b'KEY_EXCHANGE')
                     request = request[20:]
-                    print('       > Initiating key exchange')
+                    # print('       > Initiating key exchange')
+                    queue = '       > Initiating key exchange'
                 elif b'<flag: https_msg>' == request[:17]:
+                    message_type = 'encrypted_HTTPS_request='
                     s.sendall(b'HTTPS_MESSAGE')
-                    print('       > Initiating secure https message')
+                    # print('       > Initiating secure https message')
+                    queue = '       > Initiating secure https message'
                     request = request[17:]
                 else:
-                    print('       > Initiating base message')
+                    # print('       > Initiating base message')
+                    queue = '       > Initiating base message'
+                print(f'\n > New request from {client_port}: Send {message_type}"{request}" to "{target_port}"{identify_port(target_port)} (Expecting {expected_responses} responses)')
+                add_to_file(client_port, target_port, request)
+                print(queue)
                 s.sendall(request)
                 print(f'     > Message sent')
 
                 # Collect the specified number of responses
                 for _ in range(expected_responses):
                     response = s.recv(1024)  # Receive up to 1 KB response for simplicity
-                    response_to_display: bytes = response if len(response) < 40 else response[:40] + b' ...'
-                    print(f'   {target_port}{identify_port(str(target_port))} replied with "{response_to_display}"')
-                    
+                    add_to_file(target_port, client_port, response)
+                    # response_to_display: bytes = response if len(response) < 80 else response[:80] + b' ...'
+                    # print(f'   {target_port}{identify_port(str(target_port))} replied with "{response_to_display}"')
+
                     try:
                         if len(response) < 3:
                             response_code, response = '304', b'304 No Response From Web-Server'
@@ -127,7 +165,7 @@ class AccessPointShell:
                         print(f'   > Response code is not 200; it is {response_code}')
                         responses.append(response)
                     else:
-                        message_to_display: bytes = b_message if len(b_message) < 40 else b_message[:40] + b' ...'
+                        message_to_display: bytes = b_message if len(b_message) < 80 else b_message[:80] + b' ...'
                         print(f'   > Decoded reply from {target_port} as [code: {response_code}, message: "{message_to_display}"]')
                         responses.append(b'200 ' + b_message)
 
@@ -155,3 +193,5 @@ if __name__ == "__main__":
         ap_shell.start()
     except KeyboardInterrupt:
         print("\nAccess Point shutting down.")
+    finally:
+        add_to_file_update()
