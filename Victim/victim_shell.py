@@ -1,6 +1,6 @@
 import socket
 import json
-from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose
+from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose, known_CA_names, refresh_CAs, display_CAs, FR
 import os
 
 # Access Point Shell host and port
@@ -140,9 +140,53 @@ def connect_to_web_service_via_ap(ap_host, ap_port, target_port, target: str = '
     except Exception as e:
         if is_verbose(): print(f"   < Unexpected error in connect_to_web_service_via_ap: {e}")
 
+def download_ca(APh, APp):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((APh, APp))
+        try:
+            s.sendall(b'download certificate')
+            response = s.recv(2048)
+        except Exception as e:
+            print(f' > err {e}')
+            return
+    FR.write('RootCertificates/MaliciousCA_public_key.pem', response, mode='wb')
+    print(' > Download Successful')
+    refresh_CAs()
+    if is_verbose(): display_CAs()
+    print(' > CAs Updated\n')
+
+    
+def connect_request() -> bytes:
+    if 'MaliciousCA' not in known_CA_names():
+        return b'connection request'
+    return b'infected connection request'
+
+def connect_to_wifi_access_point(APh, APp):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((APh, APp))
+        try:
+            s.sendall(connect_request())
+            response = s.recv(1024).decode()
+        except Exception as e:
+            print(f' > err {e}')
+            exit()
+    if response == '200 approved':
+        print(" > connected to WiFi successfully")
+        return
+    if response == '403 certificate missing':
+        print(" > Can't connect to WiFi, reason: missing CA")
+        if input('   Download CA from WiFi? (Y/n) > ').lower() not in ['yes', 'y']:
+            exit()
+        download_ca(APh, APp)
+        if input('   Try reconnect to WiFi? (Y/n) > ').lower() not in ['yes', 'y']:
+            exit()
+        connect_to_wifi_access_point(APh, APp)
 
 
 def connect(target):
+    print('No internet ...')
+    print('Connecting to WiFi ...')
+    connect_to_wifi_access_point(AP_HOST, AP_PORT)
     print(f'\nInitiating connection to {target}')
     dns_port = query_dns(AP_HOST, AP_PORT, to=target)
     if dns_port == -1:
