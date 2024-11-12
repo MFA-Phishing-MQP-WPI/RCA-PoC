@@ -1,6 +1,6 @@
 import socket
 import json
-from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose
+from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose
 import os
 
 # Access Point Shell host and port
@@ -41,6 +41,10 @@ def query_dns(dns_host, dns_port, to: str = "login.microsoft.com"):
             else:
                 if is_verbose(): print(f"   < Unexpected status code {status_code} from DNS.")
                 return -1
+    except ConnectionRefusedError as e:
+        if is_verbose(): print(f"   < Wi-Fi Access Point cannot be reached")
+        print('\n\tErr Check Wi-Fi Access Point\n')
+        exit()
     except Exception as e:
         if is_verbose(): print(f"   < Unexpected error in query_dns: {e}")
         return -1
@@ -147,6 +151,7 @@ def connect(target):
     connect_to_web_service_via_ap(AP_HOST, AP_PORT, target_port=dns_port, target=target)
 
 if __name__ == "__main__":
+    edit_verbose()
     try:
         connect('login.microsoft.com')
     except KeyboardInterrupt:
