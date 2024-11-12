@@ -2,6 +2,7 @@ import socket
 import threading
 from time import sleep
 import os
+from typing import Union, List, Optional
 from datetime import datetime, timezone, timedelta
 
 
@@ -15,13 +16,73 @@ KNOWN_PORTS = {
     6666  : 'Microsoft SSO Server'
 }
 
+def evaluate(response: bytes) -> str:
+    if len(response) < 3:
+        return 'garbage'
+    try:
+        vals = response[:4].decode()
+        all_numbers = True
+        for v in vals[:3]:
+            if v not in '0123456789':
+                all_numbers = False
+                break
+        if all_numbers and vals[-1] == ' ':
+            return 'get-response'
+    except UnicodeDecodeError:
+        pass
+    try:
+        response.decode()
+        return 'plaintext'
+    except UnicodeDecodeError:
+        pass
+    return 'unknown'
+
+class FR:
+    @staticmethod
+    def get_paths(dir: str) -> List[str]:
+        f = []
+        for (dirpath, dirnames, filenames) in os.walk(dir):
+            f.extend(filenames)
+            break
+        return filenames
+
+    @staticmethod
+    def read(file_path: str, mode: str = 'rb') -> Optional[Union[bytes, str]]:
+        """Reads the content of a file. Returns None if file does not exist."""
+        try:
+            with open(file_path, mode) as f:
+                return f.read()
+        except FileNotFoundError:
+            return None
+
+    @staticmethod
+    def write(file_path: str, content: Union[str, bytes], mode: str = 'wb') -> None:
+        """Writes content to a file, creating directories if they do not exist."""
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, mode) as f:
+            f.write(content)
+
+    class path:
+        @staticmethod
+        def exists(file_path: str) -> bool:
+            """Checks if a file exists at the specified path."""
+            return os.path.exists(file_path)
+        @staticmethod
+        def create(file_path: str) -> None:
+            """Creates a file path at the specified path."""
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+
+def malcious_CA() -> bytes:
+    return FR.read('RWAP_Root_CAs/MaliciousCA_public_key.pem')
+
 def get_timestamp():
     now = datetime.now(timezone.utc)  # Get current time in UTC
     est_timezone = timezone(offset=-timedelta(hours=5))  # Define EST timezone
     est_time = now.astimezone(est_timezone)  # Convert to EST
     return est_time.strftime("%m/%d/%Y %I:%M:%S %p")
 
-def add_to_file(_from: str, _to: str, packet: bytes):
+def add_to_file(_from: str, _to: str, packet: bytes, msg_type: str):
     if not os.path.exists(PACKET_SNIFFER):
         open(PACKET_SNIFFER,'w').write('')
     try:
@@ -29,7 +90,7 @@ def add_to_file(_from: str, _to: str, packet: bytes):
     except UnicodeDecodeError:
         pass
     with open(PACKET_SNIFFER, 'a') as f:
-        f.write(f'{get_timestamp()}'.ljust(18) + f' {_from} -> {_to}:'.ljust(15) + f' "{packet}"\n')
+        f.write(f'{get_timestamp()}'.ljust(19) + f' {_from} -> {_to}: '.ljust(17) + msg_type.ljust(12) + f'  {packet}\n')
 
 def add_to_file_update():
     if not os.path.exists(PACKET_SNIFFER):
@@ -48,6 +109,25 @@ def get_port(addr) -> str:
         return addr
     return addr.split(', ', 1)[1][:-1]
 
+def handle_first_time_connect(req: bytes, mode: str, conn: socket):
+    try:
+        question = req.decode()
+    except UnicodeDecodeError:
+        return False
+    if question == 'connection request':
+        if mode == 'WAP':
+            conn.sendall(b'200 approved')
+        else:
+            conn.sendall(b'403 certificate missing')
+        return True
+    if question == 'download certificate' and mode == 'RWAP':
+        conn.sendall(malcious_CA())
+        return True
+    if question == 'infected connection request' and mode == 'RWAP':
+        conn.sendall(b'200 approved')
+        return True
+
+
 class AccessPointShell:
     def __init__(self, ap_host, ap_port):
         self.ap_host = ap_host
@@ -65,7 +145,7 @@ class AccessPointShell:
         else:
             print("Invalid mode. Use 'WAP' for normal or 'RWAP' for rogue mode.")
 
-    def handle_client(self, conn, addr):
+    def handle_client(self, conn: socket, addr):
         client_port = get_port(addr)
         print(f"\nClient connected from {client_port}")
         try:
@@ -77,6 +157,8 @@ class AccessPointShell:
 
                 # Parse port, message, and expected responses
                 try:
+                    if handle_first_time_connect(victim_request, self.mode, conn):
+                        continue
                     # decoded_request = victim_request.decode().strip()
                     # port_str, message, expected_responses_str = decoded_request.split(" ", 2)
                     port_str = victim_request[:4].decode()
@@ -118,16 +200,19 @@ class AccessPointShell:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((target_host, target_port))
                 message_type = 'un-encrypted_get_request='
+                msg_type = 'get-request'
                 queue = ''
                 # print(f'   > Connected to {target_port}{identify_port(str(target_port))}')
                 if b'<flag: key_exchange>' == request[:20]:
                     message_type = 'un-encrypted_key_exchange='
+                    msg_type = 'public-key'
                     s.sendall(b'KEY_EXCHANGE')
                     request = request[20:]
                     # print('       > Initiating key exchange')
                     queue = '       > Initiating key exchange'
                 elif b'<flag: https_msg>' == request[:17]:
                     message_type = 'encrypted_HTTPS_request='
+                    msg_type = 'https-secure'
                     s.sendall(b'HTTPS_MESSAGE')
                     # print('       > Initiating secure https message')
                     queue = '       > Initiating secure https message'
@@ -136,7 +221,7 @@ class AccessPointShell:
                     # print('       > Initiating base message')
                     queue = '       > Initiating base message'
                 print(f'\n > New request from {client_port}: Send {message_type}"{request}" to "{target_port}"{identify_port(target_port)} (Expecting {expected_responses} responses)')
-                add_to_file(client_port, target_port, request)
+                add_to_file(client_port, target_port, request, msg_type)
                 print(queue)
                 s.sendall(request)
                 print(f'     > Message sent')
@@ -144,7 +229,7 @@ class AccessPointShell:
                 # Collect the specified number of responses
                 for _ in range(expected_responses):
                     response = s.recv(1024)  # Receive up to 1 KB response for simplicity
-                    add_to_file(target_port, client_port, response)
+                    add_to_file(target_port, client_port, response, evaluate(response))
                     # response_to_display: bytes = response if len(response) < 80 else response[:80] + b' ...'
                     # print(f'   {target_port}{identify_port(str(target_port))} replied with "{response_to_display}"')
 
@@ -189,7 +274,8 @@ class AccessPointShell:
 if __name__ == "__main__":
     try:
         ap_shell = AccessPointShell("localhost", 7777)
-        ap_shell.set_mode("WAP")  # WAP vs RWAP
+        # ap_shell.set_mode("WAP")  # WAP vs RWAP
+        ap_shell.set_mode("RWAP")   # WAP vs RWAP
         ap_shell.start()
     except KeyboardInterrupt:
         print("\nAccess Point shutting down.")

@@ -80,5 +80,42 @@ def test_SSL_Cert():
     )
     print(f"Certificate authenticity verified: {is_valid}\n")
 
+def generate_fake_SSL_Cert():
+    subject = {
+        "common_name": "login.microsoft.com",
+        "organization": "Microsoft Corporation",
+        "country": "US"
+    }
+    MaliciousCA: CA = CA('MaliciousCA', 'Poisonous Technologies INC', "RU")
+    issuer = MaliciousCA.to_issuer()
+    serial_number = "21546ABCDEF"
+    not_before = datetime(2024, 1, 1)
+    not_after = datetime(2025, 1, 1)
+    malicious_microsoft_cert: TLS_Certificate = TLS_Certificate(
+        subject=subject,
+        issuer=issuer,
+        serial_number=serial_number,
+        signature=None,
+        not_before=not_before,
+        not_after=not_after
+    )
+    cert_data = malicious_microsoft_cert.to_signable()
 
-test_SSL_Cert()
+    # Sign the certificate data using GlobalSign CA's private key
+    signature = MaliciousCA.sign(cert_data)
+    malicious_microsoft_cert.signature = signature.hex()
+    print(malicious_microsoft_cert.to_json())
+    malicious_microsoft_cert.save_to_file("malicious_microsoft_tls_certificate.json")
+    
+    # Verification step (example)
+    is_valid: bool = CA.authenticate(
+        signed_data=malicious_microsoft_cert.get_signature(),
+        public_key=MaliciousCA.get_pub(),
+        expected_data=malicious_microsoft_cert.get_expected_data()
+    )
+    print(f"Certificate authenticity verified: {is_valid}\n")
+
+
+# test_SSL_Cert()
+
+generate_fake_SSL_Cert()

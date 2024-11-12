@@ -155,6 +155,16 @@ def get_CAs(root_ca_folder:str='RootCertificates') -> List[CA]:
 
 KNOWN_CAS: List[CA] = get_CAs()
 
+def refresh_CAs():
+    global KNOWN_CAS
+    KNOWN_CAS = get_CAs()
+
+def known_CA_names():
+    refresh_CAs()
+    global KNOWN_CAS
+    return [ca.name for ca in KNOWN_CAS]
+
+
 
 def TLS_is_authentic(tls: TLS_Certificate, for_url: str):
     url_match: bool = tls.get_url() == for_url
@@ -247,7 +257,10 @@ def edit_verbose():
         global verbose
         verbose = True
 
-if __name__ == '__main__':
+def display_CAs():
     print("\nALL KNOWN CAs TO VICTIM\n")
     for ca in KNOWN_CAS:
         print(ca)
+
+if __name__ == '__main__':
+    display_CAs()

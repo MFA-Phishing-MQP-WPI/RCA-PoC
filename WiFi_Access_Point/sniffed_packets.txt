@@ -1,30 +1,19 @@
-11/12/2024 12:18:17 AM 42682 -> 5555: "login.microsoft.com"
-11/12/2024 12:18:17 AM 5555 -> 42682: "200 6666"
-11/12/2024 12:18:17 AM 42686 -> 6666: "CERT_REQUEST"
-11/12/2024 12:18:17 AM 6666 -> 42686: "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
-11/12/2024 12:18:17 AM 42686 -> 6666: "b'!<\xbc"\x80\x81kU\x15?\xd4\x96wW\xb8\xef'"
-11/12/2024 12:18:17 AM 6666 -> 42686: ""
-
-
-
-11/12/2024 12:22:09 AM 38520 -> 5555: "login.microsoft.com"
-11/12/2024 12:22:09 AM 5555 -> 38520: "200 6666"
-11/12/2024 12:22:09 AM 38526 -> 6666: "CERT_REQUEST"
-11/12/2024 12:22:09 AM 6666 -> 38526: "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
-11/12/2024 12:22:09 AM 38526 -> 6666: "b'\x00_.\xaf^6\xec(\x1au;\x8a\x83\xc5g\xcd'"
-11/12/2024 12:22:09 AM 6666 -> 38526: "b'200 H\x19\xe6sh[\xd8[\x87\xd3*\xcbSC\x99 '"
-11/12/2024 12:22:10 AM 38526 -> 6666: "MCdw4GVNdzVVA6aYf7HVN8YjRXIHmMKYtsr+PcLHnBnZ+DPVVw3reARhT1glQkhJHmIEre7+"
-
-
-
-11/12/2024 12:24:42 AM 38236 -> 5555: "login.microsoft.com"
-11/12/2024 12:24:42 AM 5555 -> 38236: "200 6666"
-11/12/2024 12:24:43 AM 38246 -> 6666: "CERT_REQUEST"
-11/12/2024 12:24:43 AM 6666 -> 38246: "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
-11/12/2024 12:24:43 AM 38246 -> 6666: "b'\xeb\xbfw\xd2\xac\xc6\xbb\xb0\\\x88\x0f\x90\xab\x9f\x85\xc4'"
-11/12/2024 12:24:43 AM 6666 -> 38246: "b'200 k\xb0\xa3\xc9\xa0r\x13\n\xfb\xfd?\xd7\x86\xbc\xae)'"
-11/12/2024 12:24:43 AM 38246 -> 6666: "HBwnvEWzYuBhpTyMiOs0+sin5eIIr6Mrgi4FDM7JV+taJiXOO1apvdZZrIVBZCjlpD7osoh7"
-11/12/2024 12:24:43 AM 6666 -> 38246: "b'200 \xb2\xa4\xa0\x184\x1d\x8f/\xff\xdf\xae\x14\xce\xae\xce\x86\xab\x85:\x9f\xcb>\xb4\x05\x82\xf4\xcae\xf8\xa7\xcbgm\xad@+'"
+11/12/2024 01:20:39 AM 34476 -> 5555: get-request  "login.microsoft.com"
+11/12/2024 01:20:39 AM 5555 -> 34476: get-response "200 6666"
+11/12/2024 01:20:39 AM 34486 -> 6666: get-request  "CERT_REQUEST"
+11/12/2024 01:20:39 AM 6666 -> 34486: get-response "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
+11/12/2024 01:20:39 AM 34486 -> 6666: public-key   "b'\xe8\x0c\t\xda\xa3\x06\xac\xd8{\x05pGO=\xccG'"
+11/12/2024 01:20:39 AM 6666 -> 34486: get-response "b'200 f\x979\xe7\xb9Q\xc2\xef>@\xb7\xac;\x9b}\x11'"
+11/12/2024 01:20:39 AM 34486 -> 6666: https-secure "5qtPu6cdgxxm1fRi1ua/TB7vzt7js1K4MkUdsNkJgTpspePwaJO94478QD3HhHrWoEj/35s2"
+11/12/2024 01:20:39 AM 6666 -> 34486: get-response "b'200 \xe2^\x06L\x19\x1e[\xdck\x05\x800\x81n\x04 \x9473i\xdf\xa5\xca\xe3\xcc\xfc\x87\xc0\xb1\x04\x91\xadY\x17\xf0Q'"
+11/12/2024 01:21:12 AM 60036 -> 5555: get-request  "login.microsoft.com"
+11/12/2024 01:21:12 AM 5555 -> 60036: get-response "200 6666"
+11/12/2024 01:21:12 AM 60052 -> 6666: get-request  "CERT_REQUEST"
+11/12/2024 01:21:12 AM 6666 -> 60052: get-response "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
+11/12/2024 01:21:13 AM 60052 -> 6666: public-key   "b'\x8a\xd0\xcf\xf6\xb1X\xd3]\xfa*7h[\xacb\xfd'"
+11/12/2024 01:21:13 AM 6666 -> 60052: get-response "b'200 >\xd6\x025\n\x8a\xae5\xae\x9bh\x135V\xfc\x16'"
+11/12/2024 01:21:13 AM 60052 -> 6666: https-secure "yUdXY12S8h6pYYunt0pgTLeRaHGKe3RmWStgcVFlXtHXbwbu7q2eoxaougBVCmnBbHLRRoNy"
+11/12/2024 01:21:13 AM 6666 -> 60052: get-response "b'200 \xf3D\xa9\xa4\x9bR\x03\x1f\x9f\x99:\xe6\x12\xdf+\xb5 R\xbbX\xe41A\x94\xcb@\xa5\xb6G\xac\xc5\xbd,M\xcbG'"
 
 
 
