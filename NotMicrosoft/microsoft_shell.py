@@ -4,7 +4,7 @@ from MUtils import get_port, encrypt, decrypt, from_b64, decoder
 
 DATAFILE = 'Data.txt'
 TIME_OUT_TIME = 5.0
-CERT_LOCATION = 'fake_tls_certificate.json'
+CERT_LOCATION = 'malicious_microsoft_tls_certificate.json'
 
 def get_TLS_bytes() -> bytes:
     with open(CERT_LOCATION, "r") as f:
