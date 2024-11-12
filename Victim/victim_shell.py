@@ -1,105 +1,155 @@
 import socket
 import json
-from VUtils import TLS_Certificate, cert_is_authentic
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
+from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose
 import os
-from typing import List
 
+# Access Point Shell host and port
+AP_HOST = "localhost"
+AP_PORT = 7777  # Port for the Access Point Shell
+TIME_OUT_TIME = 5.0
 
-
-def send(msg: str, conn: socket.socket, shared_key: bytes) -> bool:
+def query_dns(dns_host, dns_port, to: str = "login.microsoft.com"):
+    """
+    Sends a DNS request through the Access Point Shell (acting as a proxy).
+    """
     try:
-        iv = os.urandom(16)
-        encryptor = Cipher(algorithms.AES(shared_key), modes.CFB(iv), backend=default_backend()).encryptor()
-        encrypted_message = iv + encryptor.update(msg.encode())
-        conn.sendall(encrypted_message)
-        return True
-    except Exception as e:
-        print(f"Error sending message: {e}")
-        return False
-
-
-
-def receive(conn: socket.socket, shared_key: bytes) -> str:
-    try:
-        data = conn.recv(1024)
-        iv, encrypted_message = data[:16], data[16:]
-        decryptor = Cipher(algorithms.AES(shared_key), modes.CFB(iv), backend=default_backend()).decryptor()
-        return decryptor.update(encrypted_message).decode()
-    except Exception as e:
-        print(f"Error receiving message: {e}")
-        return ""
-
-
-
-################################################################
-
-
-
-def query_dns(dns_host, dns_port, to:str="login.microsoft.com"):
-    try:
+        print(f"\n > Asking DNS to resolve {to}")
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((dns_host, dns_port))
-            s.sendall(to.encode())
-            port = int(s.recv(1024).decode())
-        return port
-    except ConnectionRefusedError:
-        print("\n\tCould not connect to DNS. Is it running?\n")
+            
+            # Send the DNS request with target port (5555 for DNS) and specify 1 expected response
+            dns_request = f"{5555} {to} 1"
+            s.sendall(dns_request.encode())
+            
+            response = s.recv(1024).decode('utf-8').strip()
+            status_code, message = response.split(" ", 1)
+            # b_status_code, b_message = response[:3], response[4:]
+            # status_code = b_status_code.decode()
+            # message = b_message.encode()
+
+            if status_code == "200":
+                try:
+                    port = int(message)
+                    if is_verbose(): print(f"   < DNS resolved {to} to {port}")
+                    return port
+                except ValueError:
+                    if is_verbose(): print(f"   < Received non-integer port from DNS: '{message}'")
+                    return -1
+            elif status_code == "404":
+                if is_verbose(): print("\n\tDNS returned 'Not Found'.")
+                return -1
+            else:
+                if is_verbose(): print(f"   < Unexpected status code {status_code} from DNS.")
+                return -1
+    except Exception as e:
+        if is_verbose(): print(f"   < Unexpected error in query_dns: {e}")
+        return -1
+
+def connect_to_web_service_via_ap(ap_host, ap_port, target_port, target: str = 'login.microsoft.com'):
+    """
+    Connects to the Microsoft service through the Access Point Shell, requesting the Access Point
+    to act on the victim's behalf.
+    """
+    try:
+        print(f'\n > Connecting to {target} at {target_port} via Access Point')
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((ap_host, ap_port))
+            s.settimeout(TIME_OUT_TIME)
+            request_message = f"{target_port} CERT_REQUEST 1"  # Specify 1 response expected from Microsoft (the TLS certificate)
+            if is_verbose(): print('')
+            print(f'  >> Requesting {target} TLS Certification via Access Point')
+            s.sendall(request_message.encode())
+        
+            # Step 1: Receive the TLS certificate
+            response = s.recv(4096)
+            status_code = response[:3].decode('utf-8')
+            
+            if status_code != "200":
+                if is_verbose(): print(f"   < Failed to connect to {target}. Status code: {status_code}")
+                return
+            if is_verbose(): print(f'   < Receved response with status code: {status_code}; reading certificate ...')
+            
+            try:
+                cert_data = response[3:].decode('utf-8').strip()
+            except ValueError as e:
+                if is_verbose(): print(f'   < Certificate is not formatted correctly. (HTTPS FAILED) Aborting connection with unauthorised web-server.')
+                return
+            
+            if is_verbose(): print(f'     | Verifying authenticity of the recieved certificate ...')
+            cert_dict = json.loads(cert_data)
+            
+            # Re-create TLS_Certificate instance from received data
+            received_certificate = TLS_Certificate(
+                subject=cert_dict["subject"],
+                issuer=cert_dict["issuer"],
+                serial_number=cert_dict["serial_number"],
+                signature=cert_dict["signature"],
+                not_before=cert_dict["validity_period"]["not_before"],
+                not_after=cert_dict["validity_period"]["not_after"]
+            )
+
+            # Step 2: Verify certificate authenticity
+            is_valid:bool = TLS_is_authentic(received_certificate, target)
+            if is_verbose(): print(f'     | Verification complete')
+            if is_valid: # cert_is_authentic(received_certificate.get_signature(), received_certificate.get_expected_data()):
+                print("   < TLS Certificate successfully verified.")
+            else:
+                print("   < TLS Certificate authenticity could not be verified. (HTTPS FAILED) Aborting connection with unauthorised web-server.")
+                return
+
+            # Step 3: Perform Diffie-Hellman key exchange
+            if is_verbose(): print('')
+            print(f'  >> Requesting public key exchange to begin HTTPS (Diffie-Hellman)')
+            my_secret: bytes = os.urandom(16)
+            s.sendall(f"{target_port} <flag: key_exchange>".encode() + my_secret + " 1".encode())
+            
+            response: bytes = s.recv(1024)
+            response_code, their_secret = response[:3].decode(), response[4:]
+            if response_code != '200':
+                if is_verbose(): print(f'   < Got response code {response_code} instead of 200 when waiting to recieve their secret')
+                if is_verbose(): print(f'     HTTPS failed. Aborting connection')
+                exit()
+            # print(f' << DEBUG: {their_secret=} >>')
+            if not their_secret:
+                if is_verbose(): print("   < Failed to receive server's public key.")
+                return
+
+            shared_key = bytes(a ^ b for a, b in zip(my_secret, their_secret))
+            if is_verbose(): print(f"   < Derived shared key: {shared_key}")
+
+            # Step 4: Send and receive messages over the secure channel
+            # send("This is the victim, announce yourself!", s, shared_key, target_port=target_port)
+            s.sendall(f"{target_port} <flag: https_msg>".encode() + to_b64(encrypt("This is the victim, announce yourself!", shared_key)) + " 1".encode())
+            # microsoft_response = receive(s, shared_key)[0]
+            response = s.recv(1024)
+            response_code, encrypted_microsoft_response = response[:3].decode(), response[4:]
+            if response_code != '200':
+                if is_verbose(): print(f'   < Got response code {response_code} instead of 200 when waiting to recieve their response')
+                if is_verbose(): print(f'     HTTPS pipe broken. Aborting connection')
+                exit()
+
+            microsoft_response = decrypt(encrypted_microsoft_response, shared_key)
+
+            print(f"   < Microsoft says: '{microsoft_response}'")
+    except socket.timeout as e:
+        if is_verbose(): print(f'   < socket {e} (5 seconds have passed with no response from (R)WAP)')
+    except Exception as e:
+        if is_verbose(): print(f"   < Unexpected error in connect_to_web_service_via_ap: {e}")
+
+
+
+def connect(target):
+    print(f'\nInitiating connection to {target}')
+    dns_port = query_dns(AP_HOST, AP_PORT, to=target)
+    if dns_port == -1:
+        print(f"DNS could not find {target}")
         exit()
-
-
-
-def connect_to_web_service(host, port, target:str='login.microsoft.com'):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        try:
-            s.connect((host, port))
-        except ConnectionRefusedError:
-            print(f"\n\tCould not connect to web_service({target} at {port}). Is it running?\n")
-            exit()
-        
-        cert_data = s.recv(4096).decode()  # Receive the JSON data of the certificate
-        cert_dict = json.loads(cert_data)
-        
-        received_certificate = TLS_Certificate(
-            subject=cert_dict["subject"],
-            issuer=cert_dict["issuer"],
-            serial_number=cert_dict["serial_number"],
-            signature=cert_dict["signature"],
-            not_before=cert_dict["validity_period"]["not_before"],
-            not_after=cert_dict["validity_period"]["not_after"]
-        )
-
-        if cert_is_authentic( received_certificate.get_signature(), received_certificate.get_expected_data() ):
-            print("SSL Certificate successfully verified.")
-        else:
-            print("SSL Certificate authenticity could not be verified. (HTTPS FAILED) Aborting.")
-            return
-
-        my_secret = os.urandom(16)
-        s.sendall(my_secret)
-        their_secret = s.recv(1024)
-
-        shared_key = bytes(a ^ b for a, b in zip(my_secret, their_secret))
-
-        if send("This is the victim, announce yourself!", s, shared_key):
-            print("Message sent to Microsoft.")
-        
-        response = receive(s, shared_key)
-        if not response:
-            print("Failed to receive a response from Microsoft.")
-        else:
-            print(f"Microsoft says: '{response}'")
-
-
+    connect_to_web_service_via_ap(AP_HOST, AP_PORT, target_port=dns_port, target=target)
 
 if __name__ == "__main__":
     try:
-        target = 'login.microsoft.com'
-        dns_port = query_dns("localhost", 5555, to=target)
-        if dns_port == -1:
-            print(f"DNS could not find {target}")
-            exit()
-        connect_to_web_service("localhost", dns_port, target=target)
+        connect('login.microsoft.com')
     except KeyboardInterrupt:
-        print("",end='\r')
+        print("\nVictim shell shutting down.")
+    except Exception as e:
+        if is_verbose(): print(f"Unexpected error: {e}")
