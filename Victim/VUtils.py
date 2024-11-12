@@ -130,9 +130,9 @@ class TLS_Certificate:
         try:
             with open(filename, 'w') as file:
                 file.write(self.to_json())
-            if verbose: print(f"Certificate saved to {filename}")
+            if is_verbose(): print(f"Certificate saved to {filename}")
         except Exception as e:
-            if verbose: print(f"Error saving certificate to file: {e}")
+            if is_verbose(): print(f"Error saving certificate to file: {e}")
 
 
             
@@ -159,9 +159,9 @@ KNOWN_CAS: List[CA] = get_CAs()
 def TLS_is_authentic(tls: TLS_Certificate, for_url: str):
     url_match: bool = tls.get_url() == for_url
     if url_match:
-        if verbose: (f'      > TLS certificate is for "{tls.get_url()}" matching the target url')
+        if is_verbose(): (f'      > TLS certificate is for "{tls.get_url()}" matching the target url')
     else:
-        if verbose: print(f' !  ! > TLS certificate is for "{tls.get_url()}" NOT matching the target url({for_url})')
+        if is_verbose(): print(f' !  ! > TLS certificate is for "{tls.get_url()}" NOT matching the target url({for_url})')
 
     return url_match and cert_is_authentic(
         tls.get_signature(),
@@ -171,9 +171,9 @@ def TLS_is_authentic(tls: TLS_Certificate, for_url: str):
 def cert_is_authentic(sig: bytes, expected: bytes) -> bool:
     for ca in KNOWN_CAS:
         if ca.is_authentic(sig, expected):
-            if verbose: print(f'      > Authenticated TLS using hardcoded root-CA({ca.name})\'s public key')
+            if is_verbose(): print(f'      > Authenticated TLS using hardcoded root-CA({ca.name})\'s public key')
             return True
-    if verbose: print(f'      > Failed to authenticate TLS using hardcoded root-CA{KNOWN_CAS.keys()}\'s public key')
+    if is_verbose(): print(f'      > Failed to authenticate TLS using hardcoded root-CA{KNOWN_CAS.keys()}\'s public key')
     return False
 
 
@@ -194,7 +194,7 @@ def send(msg: str, conn: socket.socket, shared_key: bytes, target_port: int) -> 
         conn.sendall(request)
         return True
     except Exception as e:
-        if verbose: print(f"Error sending message: {e}")
+        if is_verbose(): print(f"Error sending message: {e}")
         return False
 
 def encrypt(msg: str, shared_key: bytes) -> bytes:
@@ -204,7 +204,7 @@ def encrypt(msg: str, shared_key: bytes) -> bytes:
         encrypted_message = iv + encryptor.update(msg.encode())
         return encrypted_message
     except Exception as e:
-        if verbose: print(f"Error encrypting message: {e}")
+        if is_verbose(): print(f"Error encrypting message: {e}")
         return b''
 
 def decrypt(encrypted_msg: bytes, shared_key: bytes) -> str:
@@ -214,7 +214,7 @@ def decrypt(encrypted_msg: bytes, shared_key: bytes) -> str:
         decrypted_message = decryptor.update(ciphertext)
         return decrypted_message.decode()
     except Exception as e:
-        if verbose: print(f"Error decrypting message: {e}")
+        if is_verbose(): print(f"Error decrypting message: {e}")
         return b''
 
 def receive(conn: socket.socket, shared_key: bytes) -> str:
@@ -224,14 +224,14 @@ def receive(conn: socket.socket, shared_key: bytes) -> str:
     try:
         data = conn.recv(1024)
         if len(data) < 16:
-            if verbose: print("Error: Received data too short to contain IV.")
+            if is_verbose(): print("Error: Received data too short to contain IV.")
             return ""
         
         iv, encrypted_message = data[:16], data[16:]
         decryptor = Cipher(algorithms.AES(shared_key), modes.CFB(iv), backend=default_backend()).decryptor()
         return decryptor.update(encrypted_message).decode()
     except Exception as e:
-        if verbose: print(f"Error receiving message: {e}")
+        if is_verbose(): print(f"Error receiving message: {e}")
         return ""
 
 def to_b64(raw: bytes) -> bytes:
