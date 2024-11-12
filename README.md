@@ -21,6 +21,8 @@ To run this PoC, you’ll need four terminals (or terminal windows) set up in fo
     git clone https://github.com/MFA-Phishing-MQP-WPI/RCA-PoC.git
     ```
 
+<br>
+
 2. **Running each component**:
    Open a new terminal for each directory and run the respective scripts:
 
@@ -29,19 +31,25 @@ To run this PoC, you’ll need four terminals (or terminal windows) set up in fo
    cd RCA-PoC/Microsoft
    python3 microsoft_shell.py
    ```
-   
+    
+    <br>
+    
    **Terminal 2** - `Wi-Fi Access Point`:
    ```bash
    cd RCA-PoC/WiFi_Access_Point
    python3 access_point_shell.py
    ```
+
+   <br>
    
    **Terminal 3** - `DNS Server`:
    ```bash
    cd RCA-PoC/DNS
    python3 dns_server.py
    ```
-   
+    
+    <br>
+    
    **Terminal 4** - `Victim`:
    ###### basic:
    ```bash
@@ -53,6 +61,8 @@ To run this PoC, you’ll need four terminals (or terminal windows) set up in fo
    cd RCA-PoC/Victim
    python3 victim_shell.py -v
    ```
+
+<br>
 
 4. **Expected Flow**:
    - The `victim` first connects to the `DNS server` through the `access point`, requesting to resolve `login.microsoft.com`.
