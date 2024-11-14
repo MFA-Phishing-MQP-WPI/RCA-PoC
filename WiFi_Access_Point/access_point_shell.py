@@ -4,11 +4,11 @@ import time
 import random
 import sys
 import os
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Tuple
 from datetime import datetime, timezone, timedelta
 
-MODE: str = 'RWAP'
-REQUIRE_CA_WHEN_IN_RWAP_MODE: bool = True
+from AUtils import get_operating_mode, is_m_ca_required
+
 PHISHING_SERVER: int = 6665
 
 PACKET_SNIFFER: str = 'sniffed_packets.txt'
@@ -106,8 +106,9 @@ class FR:
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
 
-def malcious_CA() -> bytes:
+def get_malcious_CA_bytes() -> bytes:
     return FR.read('RWAP_Root_CAs/MaliciousCA_public_key.pem')
+
 
 def get_timestamp():
     now = datetime.now(timezone.utc)  # Get current time in UTC
@@ -115,15 +116,85 @@ def get_timestamp():
     est_time = now.astimezone(est_timezone)  # Convert to EST
     return est_time.strftime("%m/%d/%Y %I:%M:%S %p")
 
-def add_to_file(_from: str, _to: str, packet: bytes, msg_type: str):
-    if not os.path.exists(PACKET_SNIFFER):
-        open(PACKET_SNIFFER,'w').write('')
+
+def msg_info(packet: bytes, more_info: str) -> tuple:
+    """Extracts message type, response code, and message content from the packet."""
     try:
-        packet = packet.decode().replace('\n', '\\n')
+        decoded_packet = packet.decode()
+    # except AttributeError as e:
+    #     if f'{e}' == "'str' object has no attribute 'decode'":
+    #         decoded_packet = packet
+    #     else:
+    #         print(f"`{e}`")
+    #         raise e
     except UnicodeDecodeError:
-        pass
+        decoded_packet = None
+    response_code = '200'
+    if decoded_packet and len(packet) >= 3:
+        response_code = decoded_packet[:3]
+        decoded_packet = decoded_packet[4:]
+    else:
+        try:
+            response_code = int(packet[:3].decode())
+            packet = packet[4:]
+        except:
+            pass
+    if decoded_packet == 'CERT_REQUEST':
+        msg_type = "certificate req"
+    elif decoded_packet == 'Connection Refused':
+        msg_type = 'connection error'
+    elif decoded_packet and decoded_packet.startswith('{\n    "subject": {\n        "common_name":'):
+        msg_type = "certificate body"
+    elif decoded_packet and (decoded_packet.endswith('.com') or decoded_packet.endswith('.org')):
+        msg_type = "DNS resolution req"
+    elif more_info == "public-key":
+        msg_type = "diffie-hellman"
+    elif more_info == "https-secure":
+        msg_type = "https encrypted"
+    # elif not decoded_packet:
+    #     msg_type = "unknown"
+    else:
+        try:
+            int(decoded_packet)
+            msg_type = 'DNS resolution resp'
+        except Exception:
+            msg_type = "unknown"
+
+    if decoded_packet:
+        message = decoded_packet.replace('\n', '\\n')
+    else:
+        message = packet
+    return (msg_type, response_code, message)
+
+
+def add_to_file_mod(_from: str, _to: str, new_packet: bytes, old_packet: bytes, more_info:str):
+    if new_packet == old_packet:
+        add_to_file(_from, _to, new_packet, more_info)
+        return
+    add_to_file(_from, '', old_packet, more_info)
+    add_to_file('', _to, new_packet, more_info, MODIFIED=True)
+
+
+def add_to_file(_from: str, _to: str, packet: bytes, more_info:str, MODIFIED: bool = False):
+    """Logs packet information including timestamp, source, AP indicator, destination, and response code."""
+    if not os.path.exists(PACKET_SNIFFER):
+        open(PACKET_SNIFFER, 'w').write('')  # Create the log file if it doesn't exist
+    msg_type, response_code, message = msg_info(packet, more_info)
+    mod = '*MOD*' if MODIFIED else ' ORG '
+    fr = '  ' if _from == '' else '->'
+    tr = '  ' if _to == '' else '->'
+    # timestamp = get_timestamp() if not MODIFIED else ''
     with open(PACKET_SNIFFER, 'a') as f:
-        f.write(f'{get_timestamp()}'.ljust(19) + f' {_from} -> {_to}: '.ljust(17) + msg_type.ljust(12) + f'  {packet}\n')
+        log_entry = (
+            get_timestamp().ljust(25) + 
+            _from.ljust(6) + f' {fr} AP {tr} ' + _to.ljust(8) +
+            f'{mod}   ' +
+            f'{msg_type}'.ljust(23) +
+            f'[{response_code}] '.ljust(8) +
+            f'{message}\n'
+        )
+        f.write(log_entry)
+
 
 def add_to_file_update():
     if not os.path.exists(PACKET_SNIFFER):
@@ -149,7 +220,7 @@ def handle_first_time_connect(req: bytes, mode: str, conn: socket):
         return False
     if question == 'connection request':
         print(' > User requests to connect to Wi-Fi AP')
-        if mode == 'WAP' or not REQUIRE_CA_WHEN_IN_RWAP_MODE:
+        if mode == 'WAP' or not is_m_ca_required():
             print('   > Checking User\'s Root CAs')
             print('   > User passed all checks ...')
             print(' > allowing connection')
@@ -162,7 +233,7 @@ def handle_first_time_connect(req: bytes, mode: str, conn: socket):
         return True
     if question == 'download certificate' and mode == 'RWAP':
         print(' > User requests to download Malicious CA')
-        conn.sendall(malcious_CA())
+        conn.sendall(get_malcious_CA_bytes())
         print(' > Malicious CA sent to user')
         return True
     if question == 'infected connection request' and mode == 'RWAP':
@@ -187,9 +258,11 @@ class AccessPointShell:
         """Set the mode of the access point."""
         if mode in ["WAP", "RWAP"]:
             self.mode = mode
-            print(f"Access Point mode set to: {self.mode}")
+            print(f"\nAccess Point mode set to: {self.mode}")
+            require = 'will' if is_m_ca_required() else 'will NOT'
+            print(f"Access Point {require} require the malicious CA to connect\n")
         else:
-            print("Invalid mode. Use 'WAP' for normal or 'RWAP' for rogue mode.")
+            print(f"'{mode}' is an invalid mode. Use 'WAP' for normal or 'RWAP' for rogue mode.")
 
     def edit_DNS_response(self, responses: list, r_from) -> list:
         if identify_port(r_from) != ' (DNS Server)':
@@ -219,17 +292,12 @@ class AccessPointShell:
                 victim_request = conn.recv(1024)
                 if not victim_request:
                     break
-
-                # Parse port, message, and expected responses
                 try:
                     if handle_first_time_connect(victim_request, self.mode, conn):
                         continue
-                    # decoded_request = victim_request.decode().strip()
-                    # port_str, message, expected_responses_str = decoded_request.split(" ", 2)
                     port_str = victim_request[:4].decode()
                     b_message = victim_request[5:-2]
                     expected_responses_str = victim_request[-2:].decode().strip()
-                    # print(f'\n > New request from {client_port}: Send "{b_message}" to "{port_str}"{identify_port(port_str)} (Expecting {expected_responses_str} responses)')
                     target_port = int(port_str)
                     expected_responses = int(expected_responses_str)
                 except ValueError:
@@ -238,69 +306,67 @@ class AccessPointShell:
                     break
 
                 
-                responses = self.forward_request(b_message, "localhost", target_port, expected_responses, client_port)
+                (responses, infos) = self.forward_request(b_message, "localhost", target_port, expected_responses, client_port)
+                prev_responses = responses
 
                 if self.mode == 'RWAP':
                     responses = self.edit_DNS_response(responses, target_port)
-
-                # Send the response(s) back to the victim
+                
                 if responses:
-                    for i, response in enumerate(responses):
+                    for i, (response, prev_response, info) in enumerate(zip(responses, prev_responses, infos)):
+                        add_to_file_mod(str(target_port), str(client_port), response, prev_response, info)
                         time.sleep(0.2)
                         print(f' > Forwarding response {i+1} to {client_port}')
-                        # sending: bytes = response if len(response) < 40 else response[:40] + b' ...'
-                        # print(f' > Forwarding response {i+1} to {client_port}\n\t(response{i+1}={sending})')
                         conn.sendall(response)
                 else:
                     print(f' > Forwarding "404 Target Unreachable" to {client_port}')
                     conn.sendall(b'404 Target Unreachable')
 
-        except Exception as e:
+        except ValueError as e: ## REPLACE WITH EXCEPTION
             print(f"Error handling client {client_port} connection: {e}")
         finally:
             conn.close()
             print(f"Connection with client {client_port} closed.\n__________________________________________\n")
 
-    def forward_request(self, request, target_host, target_port, expected_responses, client_port) -> list:
+    def forward_request(self, request, target_host, target_port: int, expected_responses: int, client_port: str) -> Tuple[List[bytes], List[str]]:
         """Forward the request to the target and get the response(s)."""
         responses = []
+        infos = []
         try:
+            message_type = 'un-encrypted_get_request='
+            msg_type = 'get-request'
+            queue = ''
+            if b'<flag: key_exchange>' == request[:20]:
+                message_type = 'un-encrypted_key_exchange='
+                msg_type = 'public-key'
+                s.sendall(b'KEY_EXCHANGE')
+                request = request[20:]
+                queue = '       > Initiating key exchange'
+                time.sleep(0.1)
+            elif b'<flag: https_msg>' == request[:17]:
+                message_type = 'encrypted_HTTPS_request='
+                msg_type = 'https-secure'
+                s.sendall(b'HTTPS_MESSAGE')
+                queue = '       > Initiating secure https message'
+                time.sleep(0.1)
+                request = request[17:]
+            else:
+                queue = '       > Initiating base message'
+            print(f'\n > New request from {client_port}: Send {message_type}"{request}" to "{target_port}"{identify_port(target_port)} (Expecting {expected_responses} responses)')
+            add_to_file(str(client_port), str(target_port), b'200 ' + request, msg_type)
+            print(queue)
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((target_host, target_port))
-                message_type = 'un-encrypted_get_request='
-                msg_type = 'get-request'
-                queue = ''
-                # print(f'   > Connected to {target_port}{identify_port(str(target_port))}')
-                if b'<flag: key_exchange>' == request[:20]:
-                    message_type = 'un-encrypted_key_exchange='
-                    msg_type = 'public-key'
-                    s.sendall(b'KEY_EXCHANGE')
-                    request = request[20:]
-                    # print('       > Initiating key exchange')
-                    queue = '       > Initiating key exchange'
-                elif b'<flag: https_msg>' == request[:17]:
-                    message_type = 'encrypted_HTTPS_request='
-                    msg_type = 'https-secure'
-                    s.sendall(b'HTTPS_MESSAGE')
-                    # print('       > Initiating secure https message')
-                    queue = '       > Initiating secure https message'
-                    request = request[17:]
-                else:
-                    # print('       > Initiating base message')
-                    queue = '       > Initiating base message'
-                print(f'\n > New request from {client_port}: Send {message_type}"{request}" to "{target_port}"{identify_port(target_port)} (Expecting {expected_responses} responses)')
-                add_to_file(client_port, target_port, request, msg_type)
-                print(queue)
+                try:
+                    s.connect((target_host, target_port))
+                except socket.error:
+                    return ([b'402 Connection Refused'], ['connection failed'])
+                time.sleep(0.1)
                 s.sendall(request)
                 print(f'     > Message sent')
 
-                # Collect the specified number of responses
                 for _ in range(expected_responses):
                     response = s.recv(1024)  # Receive up to 1 KB response for simplicity
-                    add_to_file(target_port, client_port, response, evaluate(response))
-                    # response_to_display: bytes = response if len(response) < 80 else response[:80] + b' ...'
-                    # print(f'   {target_port}{identify_port(str(target_port))} replied with "{response_to_display}"')
-
+                    # add_to_file(target_port, client_port, response, evaluate(response))
                     try:
                         if len(response) < 3:
                             response_code, response = '304', b'304 No Response From Web-Server'
@@ -311,21 +377,23 @@ class AccessPointShell:
                         print(f'   > Received response ({response}) from target ({target_port})')
                         print(f'   > Could not convert response to string, returning "404 failed to connect"')
                         responses.append(b'404 failed to connect')
+                        infos.append('connection failed')
                         continue
 
-                    # Check response code and handle accordingly
                     if response_code != '200':
                         print(f'   > Response code is not 200; it is {response_code}')
                         responses.append(response)
+                        infos.append('unknown error')
                     else:
                         message_to_display: bytes = b_message if len(b_message) < 80 else b_message[:80] + b' ...'
                         print(f'   > Decoded reply from {target_port}{identify_port(target_port)} as [code: {response_code}, message: {message_to_display}]')
                         responses.append(b'200 ' + b_message)
+                        infos.append(msg_type)
 
-            return responses
+            return (responses, infos)
         except Exception as e:
             print(f"Error forwarding request to {target_host}:{target_port} (responding with 404) - {e}")
-            return [b'404 Target Unreachable']
+            return ([b'404 Target Unreachable'], ['connection failed'])
 
     def start(self):
         """Start the access point shell to listen for victim requests."""
@@ -338,12 +406,12 @@ class AccessPointShell:
                 client_thread = threading.Thread(target=self.handle_client, args=(conn, addr))
                 client_thread.start()
 
-# Main execution
+
+
 if __name__ == "__main__":
     try:
         ap_shell = AccessPointShell("localhost", 7777)
-        # ap_shell.set_mode("WAP")  # WAP vs RWAP
-        ap_shell.set_mode(MODE)   # WAP vs RWAP
+        ap_shell.set_mode(get_operating_mode())
         ap_shell.start()
     except KeyboardInterrupt:
         print("\nAccess Point shutting down.")
