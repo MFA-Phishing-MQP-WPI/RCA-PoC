@@ -10,6 +10,17 @@ FILES_TO_REMOVE = [
     'microsoft_tls_certificate.json'
 ]
 DIRS_TO_REMOVE  = ['GlobalSignCA', 'IdenTrustCA']
+VICTIM_ROOT_CAS_FILEPATH: str = 'Victim/RootCertificates/MaliciousCA_public_key.pem'
+
+
+def reset_victim_Root_Certs(disp:bool=True):
+    try:
+        if os.path.exists(VICTIM_ROOT_CAS_FILEPATH):
+            os.remove(VICTIM_ROOT_CAS_FILEPATH)
+            print(f' > File "{VICTIM_ROOT_CAS_FILEPATH}" deleted successfully.')
+            if disp: print('    > Victim CAs Reset')
+    except Exception:
+        pass
 
 def delete_files(files):
     for file_path in files:
@@ -53,13 +64,23 @@ def clean_and_delete(arg: str, debug:bool=False):
         if debug: print(" - files - ")
         delete_files(FILES_TO_REMOVE)
         delete_dirs(DIRS_TO_REMOVE)
+        reset_victim_Root_Certs()
 
 def miss_used():
     print("\nERROR INCORRECT USAGE")
+    print("\n\tUSAGE:   python3   reset.py")
+    print("\n\t\tTo reset the victim's Root Certificates")
     print("\n\tUSAGE:   python3   reset.py   [ (P)orts  (F)iles  (A)ll ]   [ OPTIONAL:  -(D)bug ]\n")
+    print("\n\t\tReset Ports: (p / ports)")
+    print("\n\t\t\tWill close any running processes on saved ports in case a process ends unexpectedly")
+    print("\n\t\tReset Files: (f / files)")
+    print("\n\t\t\tWill remove files used to setup the PoC like the CAs and local TLS Certificates")
+    print("\n\t\t\tWill also remove malicious certificates from the Vicitm (use python3 reset.py instead)")
+    print("\n\t\tReset All: (a / all)")
+    print("\n\t\t\tWill run both `ports` and `files`\n")
     exit()
 
-def arg_wrong() -> Tuple[bool, str, bool]:
+def process_args() -> Tuple[bool, str, bool]:
     if len(sys.argv) not in [2, 3]:
         return (False, "", False)
     index = -1
@@ -77,7 +98,10 @@ def arg_wrong() -> Tuple[bool, str, bool]:
     
 
 if __name__ == "__main__":
-    correct_usage, action, debug = arg_wrong()
+    if len(sys.argv) == 1:
+        reset_victim_Root_Certs(disp=False)
+        print('    > Victim CAs Reset')
+    correct_usage, action, debug = process_args()
     if not correct_usage:
         miss_used()
     clean_and_delete(action, debug=debug)
