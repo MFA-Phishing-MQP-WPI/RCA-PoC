@@ -16,6 +16,8 @@ pip install cryptography
 
 To run this PoC, you’ll need four terminals (or terminal windows) set up in four different directories, each containing the relevant Python scripts.
 
+Watch the [5-minute walkthrough](https://www.youtube.com/watch?v=-w1Ib0YH9nc) or follow the steps below.
+
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/MFA-Phishing-MQP-WPI/RCA-PoC.git
