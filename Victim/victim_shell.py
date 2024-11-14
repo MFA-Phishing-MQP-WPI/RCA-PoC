@@ -1,6 +1,7 @@
 import socket
 import json
-from VUtils import TLS_Certificate, TLS_is_authentic, encrypt, decrypt, to_b64, is_verbose, edit_verbose, known_CA_names, refresh_CAs, display_CAs, download_progress, installing, FR
+from VUtils import TLS_Certificate, TLS_is_authentic, cas_display, encrypt, decrypt, to_b64, is_verbose, \
+    edit_verbose, known_CA_names, refresh_CAs, display_CAs, download_progress, installing, FR
 import os
 
 # Access Point Shell host and port
@@ -97,7 +98,12 @@ def connect_to_web_service_via_ap(ap_host, ap_port, target_port, target: str = '
 
             # Step 2: Verify certificate authenticity
             is_valid:bool = TLS_is_authentic(received_certificate, target)
-            if is_verbose(): print(f'     | Verification complete')
+            if is_verbose(): 
+                if is_valid:
+                    print(f'     | Verification success - using known CAs [{cas_display()}]')
+                else:
+                    print(f'     | Verification failure - using known CAs [{cas_display()}]')
+
             if is_valid: # cert_is_authentic(received_certificate.get_signature(), received_certificate.get_expected_data()):
                 print("   < TLS Certificate successfully verified.")
             else:

@@ -213,11 +213,11 @@ def known_CA_names():
 
 
 def TLS_is_authentic(tls: TLS_Certificate, for_url: str):
-    url_match: bool = tls.get_url() == for_url
+    url_match: bool = (tls.get_url() == for_url)
     if url_match:
-        if is_verbose(): (f'      > TLS certificate is for "{tls.get_url()}" matching the target url')
+        if is_verbose(): (f'      > TLS certificate for "{tls.get_url()}" matches the target url')
     else:
-        if is_verbose(): print(f' !  ! > TLS certificate is for "{tls.get_url()}" NOT matching the target url({for_url})')
+        if is_verbose(): print(f'  !!  > TLS certificate for "{tls.get_url()}" does NOT match the target url({for_url})')
 
     return url_match and cert_is_authentic(
         tls.get_signature(),
@@ -229,10 +229,11 @@ def cert_is_authentic(sig: bytes, expected: bytes) -> bool:
         if ca.is_authentic(sig, expected):
             if is_verbose(): print(f'      > Authenticated TLS using hardcoded root-CA({ca.name})\'s public key')
             return True
-    if is_verbose(): print(f'      > Failed to authenticate TLS using hardcoded root-CA{KNOWN_CAS.keys()}\'s public key')
+    if is_verbose(): print(f'      > Failed to authenticate TLS using hardcoded root-CAs: [{", ".join([ca.name for ca in KNOWN_CAS])}]')
     return False
 
-
+def cas_display() -> str:
+    return ", ".join([ca.name for ca in KNOWN_CAS])
 
 
 def send(msg: str, conn: socket.socket, shared_key: bytes, target_port: int) -> bool:
