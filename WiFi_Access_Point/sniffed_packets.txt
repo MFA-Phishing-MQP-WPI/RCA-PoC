@@ -23,3 +23,37 @@
 
 
 
+11/14/2024 01:42:16 AM   55740  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:42:16 AM   5555   -> AP -> 55740    ORG    connection error       [402]   Connection Refused
+11/14/2024 01:42:24 AM   42888  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:42:24 AM   5555   -> AP -> 42888    ORG    connection error       [402]   Connection Refused
+11/14/2024 01:42:38 AM   48530  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:42:38 AM   5555   -> AP -> 48530    ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:42:38 AM   48542  -> AP -> 6666     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:42:38 AM   6666   -> AP -> 48542    ORG    connection error       [402]   Connection Refused
+11/14/2024 01:44:08 AM   47936  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:44:08 AM   5555   -> AP -> 47936    ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:44:08 AM   47938  -> AP -> 6666     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:44:08 AM   6666   -> AP -> 47938    ORG    certificate body       [200]   {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/14/2024 01:44:09 AM   6666   -> AP -> 47938    ORG    unknown                [404]   Target Unreachable
+
+
+
+11/14/2024 01:46:43 AM   44050  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:46:43 AM   5555   -> AP -> 44050    ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:46:43 AM   44066  -> AP -> 6666     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:46:44 AM   6666   -> AP -> 44066    ORG    certificate body       [200]   {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+
+
+
+11/14/2024 01:48:38 AM   54352  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:48:38 AM   5555   -> AP -> 54352    ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:48:38 AM   54368  -> AP -> 6666     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:48:38 AM   6666   -> AP -> 54368    ORG    certificate body       [200]   {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/14/2024 01:48:38 AM   54368  -> AP -> 6666     ORG    diffie-hellman         [200]   b'\x1bM\xa3\x0em\xce/\x96;\xd5\xdcW\x15\x02\xc7\x1a'
+11/14/2024 01:48:38 AM   6666   -> AP -> 54368    ORG    diffie-hellman         [200]   b'\xb0\xf8M\xa8\xa4\xdde\x88\x8552\x19\xd5r\n]'
+11/14/2024 01:48:39 AM   54368  -> AP -> 6666     ORG    https encrypted        [200]   0CDA7qsGtLNE8CuT+ZxWFMdaLfUNplt6+3FeUOq0PzWV0zCOBqTxG3Nov82xP/4cMVJYQfMA
+11/14/2024 01:48:39 AM   6666   -> AP -> 54368    ORG    https encrypted        [200]   b'+\xe8\x15\xf7\xa4\xd7+\xb4\xd0\xc9_\x0e/\x07N&\x81Sm\xa3\x05m\xa5\x92]<VM\x04\t\xe9\xc1[\x90\xddA'
+
+
+

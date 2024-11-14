@@ -339,16 +339,12 @@ class AccessPointShell:
             if b'<flag: key_exchange>' == request[:20]:
                 message_type = 'un-encrypted_key_exchange='
                 msg_type = 'public-key'
-                s.sendall(b'KEY_EXCHANGE')
                 request = request[20:]
                 queue = '       > Initiating key exchange'
-                time.sleep(0.1)
             elif b'<flag: https_msg>' == request[:17]:
                 message_type = 'encrypted_HTTPS_request='
                 msg_type = 'https-secure'
-                s.sendall(b'HTTPS_MESSAGE')
                 queue = '       > Initiating secure https message'
-                time.sleep(0.1)
                 request = request[17:]
             else:
                 queue = '       > Initiating base message'
@@ -360,6 +356,12 @@ class AccessPointShell:
                     s.connect((target_host, target_port))
                 except socket.error:
                     return ([b'402 Connection Refused'], ['connection failed'])
+                if msg_type == 'public-key':
+                    s.sendall(b'KEY_EXCHANGE')
+                    time.sleep(0.1)
+                elif msg_type == 'https-secure':
+                    s.sendall(b'HTTPS_MESSAGE')
+                    time.sleep(0.1)
                 time.sleep(0.1)
                 s.sendall(request)
                 print(f'     > Message sent')
