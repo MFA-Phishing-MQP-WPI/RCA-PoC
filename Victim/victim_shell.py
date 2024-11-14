@@ -35,6 +35,9 @@ def query_dns(dns_host, dns_port, to: str = "login.microsoft.com"):
                 except ValueError:
                     if is_verbose(): print(f"   < Received non-integer port from DNS: '{message}'")
                     return -1
+            elif status_code == '402':
+                if is_verbose(): print('\n\tDNS refused to connect.')
+                return -1
             elif status_code == "404":
                 if is_verbose(): print("\n\tDNS returned 'Not Found'.")
                 return -1
@@ -192,7 +195,6 @@ def connect(target):
     print(f'\nInitiating connection to {target}')
     dns_port = query_dns(AP_HOST, AP_PORT, to=target)
     if dns_port == -1:
-        print(f"DNS could not find {target}")
         exit()
     connect_to_web_service_via_ap(AP_HOST, AP_PORT, target_port=dns_port, target=target)
 

@@ -1,97 +1,25 @@
-11/12/2024 01:20:39 AM 34476 -> 5555: get-request  "login.microsoft.com"
-11/12/2024 01:20:39 AM 5555 -> 34476: get-response "200 6666"
-11/12/2024 01:20:39 AM 34486 -> 6666: get-request  "CERT_REQUEST"
-11/12/2024 01:20:39 AM 6666 -> 34486: get-response "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
-11/12/2024 01:20:39 AM 34486 -> 6666: public-key   "b'\xe8\x0c\t\xda\xa3\x06\xac\xd8{\x05pGO=\xccG'"
-11/12/2024 01:20:39 AM 6666 -> 34486: get-response "b'200 f\x979\xe7\xb9Q\xc2\xef>@\xb7\xac;\x9b}\x11'"
-11/12/2024 01:20:39 AM 34486 -> 6666: https-secure "5qtPu6cdgxxm1fRi1ua/TB7vzt7js1K4MkUdsNkJgTpspePwaJO94478QD3HhHrWoEj/35s2"
-11/12/2024 01:20:39 AM 6666 -> 34486: get-response "b'200 \xe2^\x06L\x19\x1e[\xdck\x05\x800\x81n\x04 \x9473i\xdf\xa5\xca\xe3\xcc\xfc\x87\xc0\xb1\x04\x91\xadY\x17\xf0Q'"
-11/12/2024 01:21:12 AM 60036 -> 5555: get-request  "login.microsoft.com"
-11/12/2024 01:21:12 AM 5555 -> 60036: get-response "200 6666"
-11/12/2024 01:21:12 AM 60052 -> 6666: get-request  "CERT_REQUEST"
-11/12/2024 01:21:12 AM 6666 -> 60052: get-response "200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "GlobalSignCA",\n        "organization": "GlobalSign CA Ltd.",\n        "country": "US"\n    },\n    "serial_number": "987654321ABCDEF",\n    "signature": "1ade607bb66796126b1d6a8164e7c8acfdfee2f0627bbbebea359d072a070996656a29899bc8b58f799d9cb853e1d703921bc890b62a2ff00b48fe933965ed049e0e5dbc8e470ca4cce63492d2c4f293432c4e6b331f386b800b322c579662dfcdc2743fabc8dec998d105090a59f6a21baf27c7e1e831d6bd2aad0464463803511928803689e7da4e3780297802fa20389ce581bca893b49a86c5f098b93e6aa5d5774bdf308d11ec8b94f2b8d6ea9d467f048175a3732507021c8b947df842138fa55acc1408da138bde5d0b87e889f905f85202a20b569b34c08fa24590b5b8103f29eabc978c85217bb6b0522ebb3c1b70f65daadc5d5a316754da104ac0",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}"
-11/12/2024 01:21:13 AM 60052 -> 6666: public-key   "b'\x8a\xd0\xcf\xf6\xb1X\xd3]\xfa*7h[\xacb\xfd'"
-11/12/2024 01:21:13 AM 6666 -> 60052: get-response "b'200 >\xd6\x025\n\x8a\xae5\xae\x9bh\x135V\xfc\x16'"
-11/12/2024 01:21:13 AM 60052 -> 6666: https-secure "yUdXY12S8h6pYYunt0pgTLeRaHGKe3RmWStgcVFlXtHXbwbu7q2eoxaougBVCmnBbHLRRoNy"
-11/12/2024 01:21:13 AM 6666 -> 60052: get-response "b'200 \xf3D\xa9\xa4\x9bR\x03\x1f\x9f\x99:\xe6\x12\xdf+\xb5 R\xbbX\xe41A\x94\xcb@\xa5\xb6G\xac\xc5\xbd,M\xcbG'"
+11/14/2024 01:16:46 AM   60148  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:16:46 AM   5555   -> AP             ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:16:46 AM             AP -> 60148   *MOD*   DNS resolution resp    [200]   6665
+11/14/2024 01:16:47 AM   60156  -> AP -> 6665     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:16:47 AM   6665   -> AP -> 60156    ORG    certificate body       [200]   {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
+11/14/2024 01:16:47 AM   60156  -> AP -> 6665     ORG    diffie-hellman         [200]   b'\xe1,:\xf6\x90U\r\x89\x97u9\xbe\xeb\xd8g\xd5'
+11/14/2024 01:16:47 AM   6665   -> AP -> 60156    ORG    diffie-hellman         [200]   b'm\r\xb2\xd8cE^\xbd\xc0\xb7\xb9:?\x15\t4'
+11/14/2024 01:16:48 AM   60156  -> AP -> 6665     ORG    https encrypted        [200]   BE/ZwOVRbQrNbZflPUgWsyniV5UL9pzJ5hE88MTbbdi8ya+/ZSsen8cB8qTf/aP6WDfTHbfr
+11/14/2024 01:16:48 AM   6665   -> AP -> 60156    ORG    https encrypted        [200]   b'\x99c\x00\x0e\xc1D\xd2{}\xb0\xda"\x1c\xe4\xabl\x9b\x9f&\x8b\xae\xac\xc4\t\xf0w\xe3B\xd5$-\x9c\x96'
 
 
 
-11/12/2024 11:06:32 AM 59920 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:06:33 AM 5555 -> 59920:  get-response  200 6666
+11/14/2024 01:24:33 AM   60908  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:24:33 AM   5555   -> AP             ORG    DNS resolution resp    [200]   6666
+11/14/2024 01:24:33 AM             AP -> 60908   *MOD*   DNS resolution resp    [200]   6665
+11/14/2024 01:24:34 AM   60156  -> AP -> 6665     ORG    certificate req        [200]   CERT_REQUEST
+11/14/2024 01:24:34 AM   6665   -> AP -> 60912    ORG    connection error       [402]   Connection Refused
 
 
 
-
-
-
-11/12/2024 11:07:54 AM 50578 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:07:54 AM 5555 -> 50578:  get-response  200 6666
-
-
-
-11/12/2024 11:09:33 AM 53336 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:09:33 AM 5555 -> 53336:  get-response  200 6666
-11/12/2024 11:09:33 AM 53352 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:09:33 AM 6665 -> 53352:  garbage       
-11/12/2024 11:10:53 AM 56530 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:10:53 AM 5555 -> 56530:  get-response  200 6666
-11/12/2024 11:10:53 AM 56536 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:10:53 AM 6665 -> 56536:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-
-
-
-11/12/2024 11:14:02 AM 37208 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:14:02 AM 5555 -> 37208:  get-response  200 6666
-11/12/2024 11:14:02 AM 37220 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:14:02 AM 6665 -> 37220:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-
-
-
-11/12/2024 11:17:50 AM 48070 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:17:50 AM 5555 -> 48070:  get-response  200 6666
-11/12/2024 11:17:50 AM 48072 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:17:50 AM 6665 -> 48072:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-11/12/2024 11:17:51 AM 48072 -> 6665:  public-key    b'Q\x04c{\xeap\xf4\x12^\t=\xebr/[\x91'
-11/12/2024 11:17:51 AM 6665 -> 48072:  get-response  b'200 L\xc4\xf6\xa3\x06\xc7\x84R\xc2\xb1_\xecH\xd7\xb18'
-11/12/2024 11:17:51 AM 48072 -> 6665:  https-secure  5YMv+PkwqfY8zWor5mBh3ksRxQUgsTfrxB8IPP8QucPG2nHQKZqhcJ/p8P65un5O80VPWTTX
-11/12/2024 11:17:51 AM 6665 -> 48072:  get-response  b'200 f\xe2\x12\xb2\x1aG\x9aK\xd7\xcd\x18\x9a:*jjhvx\xe91x76\xd1\xd6\x9e\x84\x00x<7t\x1f\x16\xe8\x15}'
-11/12/2024 11:18:21 AM 59002 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:18:21 AM 5555 -> 59002:  get-response  200 6666
-11/12/2024 11:18:21 AM 59014 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-11/12/2024 11:18:21 AM 59014 -> 6665:  public-key    b"\x04\xf1\x82'\x06\xa8\x04\x85\xb8\xf0?z\xd9I\xe5\xa6"
-11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  b'200 u\x89\x9a\xbd]Q\x07\x02\x1e0O\xb9ta\x19\xf0'
-11/12/2024 11:18:21 AM 59014 -> 6665:  https-secure  uvYN45WkGLwofmPmrmkIiJlpdGZS8byePu4x49nvOKruKRHxc2AFOmozTinQApQZN/aVqGjo
-11/12/2024 11:18:21 AM 6665 -> 59014:  get-response  b'200 <e<=\x01\x1f\xfa!\x14G]\x1f\x01O"\xe3\xd7#\xcaaxA\xa9mp\xb4z\xd4\xee\xc3\x8d\xc5*dP,\xd2\xc0'
-
-
-
-11/12/2024 11:25:15 AM 35928 -> 5555:  get-request   login.microsoft.com
-11/12/2024 11:25:15 AM 5555 -> 35928:  get-response  200 6666
-11/12/2024 11:25:16 AM 35936 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-11/12/2024 11:25:16 AM 35936 -> 6665:  public-key    b'\x1f\n\xde4\xa9\x87\x13~BZ\xed\x00\xdew\x87%'
-11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  b'200 \x84e;\xd2c\x9f\xe7\xcb\xc3y\xe1\xc2\xa4b%o'
-11/12/2024 11:25:16 AM 35936 -> 6665:  https-secure  uxu6owwobY9qRH4WMrjJPQIAeREgEch79QBQgdme1ZyKQenOmcUkvSFIusKNxJsDsGWDv/3e
-11/12/2024 11:25:16 AM 6665 -> 35936:  get-response  b'200 X\xc0\xe0\xc4\xf0\xc5yXq\xd4\x08\xacAi\xd0\x14Cs\x92\xe2\xcd\xbeEA\xbd}\xc7\x9ceOey='
-
-
-
-11/12/2024 12:50:19 PM 50244 -> 5555:  get-request   login.microsoft.com
-11/12/2024 12:50:19 PM 5555 -> 50244:  get-response  200 6666
-11/12/2024 12:50:19 PM 50246 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 12:50:19 PM 6665 -> 50246:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-11/12/2024 12:50:20 PM 50246 -> 6665:  public-key    b'\x18\x92KS\x7f;+W\x7f\x96\xf7\x8e\x15<{B'
-11/12/2024 12:50:25 PM 6665 -> 50246:  garbage       
-11/12/2024 12:50:37 PM 50250 -> 5555:  get-request   login.microsoft.com
-11/12/2024 12:50:37 PM 5555 -> 50250:  get-response  200 6666
-11/12/2024 12:50:37 PM 50252 -> 6665:  get-request   CERT_REQUEST
-11/12/2024 12:50:37 PM 6665 -> 50252:  get-response  200 {\n    "subject": {\n        "common_name": "login.microsoft.com",\n        "organization": "Microsoft Corporation",\n        "country": "US"\n    },\n    "issuer": {\n        "common_name": "MaliciousCA",\n        "organization": "Poisonous Technologies INC",\n        "country": "RU"\n    },\n    "serial_number": "21546ABCDEF",\n    "signature": "20cef30010707f0621c9d71747dfcc1511c9cd937cf0ae8d89eb092a6229a976ebbb16904deb4a477f4eda8c9d23545ab0b27b235a8ecd596f1a0981cf627291576c58018232853848fdaab10877a573fddfa517b5ecd07c19fb302e84b8e6dfc352005a2efb4c52094fd05c0eaf5579ec7a35be47e7985125f5a099bfb5a9b1c604104d0fdb62b560fbe66a9966c210790e094fbd18ef41e578fa9ca8a2c1fa10a55cd2c2066400d3214dd398f47881be9b968ec317eb6358259251cab9f8d73bc43dfd6c0c46b55a9cab276c2e7c857350254e692c7579aca73108c61bf3d658652e01dabb5fbbb8339fa6728238ced2cd48f4205310c97c325ada5911200d",\n    "validity_period": {\n        "not_before": "2024-01-01 00:00:00",\n        "not_after": "2025-01-01 00:00:00"\n    }\n}
-11/12/2024 12:50:38 PM 50252 -> 6665:  public-key    b'\xf8?\xbf\xbd\x8c\xa4^i@-\x90\xedW>/n'
-11/12/2024 12:50:38 PM 6665 -> 50252:  get-response  b'200 N\xe9A\xba\xf9\x17\xd7#\x0b&V\x94\xce\xe3b\xfd'
-11/12/2024 12:50:38 PM 50252 -> 6665:  https-secure  fRI5vmpHyVHJ7mLlOyRQNJQQNzEJX43wEH95qpSLg8c+d7Ce36eYwZCMK5AFwJm9zk05kgu4
-11/12/2024 12:50:38 PM 6665 -> 50252:  get-response  b'200 !\\\xe0\xae\xfa\x909\xe0\x86^Kv\\\x82\xccfBH{\xb8eA\xa8\xb8y\t3\x14Oa\x08\xf5\x03'
+11/14/2024 01:27:52 AM   35710  -> AP -> 5555     ORG    DNS resolution req     [200]   login.microsoft.com
+11/14/2024 01:27:52 AM   5555   -> AP -> 35710    ORG    connection error       [402]   Connection Refused
 
 
 

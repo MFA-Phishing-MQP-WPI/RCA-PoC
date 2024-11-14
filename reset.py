@@ -68,9 +68,9 @@ def clean_and_delete(arg: str, debug:bool=False):
 
 def miss_used():
     print("\nERROR INCORRECT USAGE")
-    print("\n\tUSAGE:   python3   reset.py")
+    print("\n\tUSAGE: python3 reset.py")
     print("\t\tTo reset the victim's Root Certificates")
-    print("\n\tUSAGE:   python3   reset.py   [ (P)orts  (F)iles  (A)ll ]   [ OPTIONAL:  -(D)bug ]\n")
+    print("\n\tUSAGE: python3 reset.py   [ (P)orts  (F)iles  (A)ll ]   [ OPTIONAL:  -(D)bug ]\n")
     print("\t\tReset Ports: (p / ports)")
     print("\t\t\tWill close any running processes on saved ports in case a process ends unexpectedly")
     print("\t\tReset Files: (f / files)")
@@ -92,7 +92,7 @@ def process_args() -> Tuple[bool, str, bool]:
         if sys.argv[index].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
             return (False, "", False)
         return (True, sys.argv[index].lower(), True)
-    elif sys.argv[1].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
+    if sys.argv[1].lower() not in ['p', 'ports', 'f', 'files', 'a', 'all']:
         return (False, "", False)
     return (True, sys.argv[1].lower(), False)
     
@@ -100,7 +100,7 @@ def process_args() -> Tuple[bool, str, bool]:
 if __name__ == "__main__":
     if len(sys.argv) == 1:
         reset_victim_Root_Certs(disp=False)
-        print('    > Victim CAs Reset')
+        exit()
     correct_usage, action, debug = process_args()
     if not correct_usage:
         miss_used()
