@@ -69,15 +69,15 @@ def clean_and_delete(arg: str, debug:bool=False):
 def miss_used():
     print("\nERROR INCORRECT USAGE")
     print("\n\tUSAGE:   python3   reset.py")
-    print("\n\t\tTo reset the victim's Root Certificates")
+    print("\t\tTo reset the victim's Root Certificates")
     print("\n\tUSAGE:   python3   reset.py   [ (P)orts  (F)iles  (A)ll ]   [ OPTIONAL:  -(D)bug ]\n")
-    print("\n\t\tReset Ports: (p / ports)")
-    print("\n\t\t\tWill close any running processes on saved ports in case a process ends unexpectedly")
-    print("\n\t\tReset Files: (f / files)")
-    print("\n\t\t\tWill remove files used to setup the PoC like the CAs and local TLS Certificates")
-    print("\n\t\t\tWill also remove malicious certificates from the Vicitm (use python3 reset.py instead)")
-    print("\n\t\tReset All: (a / all)")
-    print("\n\t\t\tWill run both `ports` and `files`\n")
+    print("\t\tReset Ports: (p / ports)")
+    print("\t\t\tWill close any running processes on saved ports in case a process ends unexpectedly")
+    print("\t\tReset Files: (f / files)")
+    print("\t\t\tWill remove files used to setup the PoC like the CAs and local TLS Certificates")
+    print("\t\t\tWill also remove malicious certificates from the Vicitm (use python3 reset.py instead)")
+    print("\t\tReset All: (a / all)")
+    print("\t\t\tWill run both `ports` and `files`\n")
     exit()
 
 def process_args() -> Tuple[bool, str, bool]:
