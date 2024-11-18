@@ -8,7 +8,7 @@
 
 ## Run With
 ```bash
-.../RCA-PoC/NotMicrosoft > python3 microsoft_shell.py
+.../RCA-PoC/NotMicrosoft > python3 not_microsoft_shell.py
 ```
 
 <br>
